@@ -1,0 +1,14 @@
+{
+  "name": "puppetchef",
+  "version": "1.0.0",
+  "description": "A simple JavaScript project.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Maurizio Dusi",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}
