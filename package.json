@@ -2,13 +2,18 @@
   "name": "puppetchef",
   "version": "1.0.0",
   "description": "A simple JavaScript project.",
-  "main": "src/index.js",
+  "main": "index.js",
+  "bin": {
+    "puppetchef": "index.js"
+  },
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Maurizio Dusi",
   "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {}
+  "dependencies": {
+    "commander": "^13.1.0",
+    "puppeteer": "^24.1.1"
+  }
 }
