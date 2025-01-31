@@ -7,9 +7,10 @@ This is a simple JavaScript project that demonstrates the structure and organiza
 ```
 puppetchef
 ├── src
-│   ├── index.js        # Entry point of the application
+│   ├── index.js        # Core functions of the application
 │   └── utils
 │       └── helper.js   # Utility functions
+├── index.js            # Entry point of the application
 ├── package.json        # NPM configuration file
 └── README.md           # Project documentation
 ```

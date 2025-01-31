@@ -14,6 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "commander": "^13.1.0",
+    "js-yaml": "^4.1.0",
     "puppeteer": "^24.1.1"
   }
 }
