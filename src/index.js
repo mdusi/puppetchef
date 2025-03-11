@@ -73,12 +73,15 @@ async function main(conf, recipe) {
       } catch (error) {
         console.log(error);
         // If operation is required and fails, set error code and break
-        if (op?.required == true) {
+        if (!op.required || op.required == true) {
           retcode = 255;
           break;
         }
       }
     }
+
+    if (retcode > 0)
+      break;
   }
 
   // Cleanup and exit
