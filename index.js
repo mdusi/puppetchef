@@ -4,7 +4,7 @@ const { Command } = require('commander');
 const fs = require('fs');
 const yaml = require('js-yaml');
 const { main } = require('./src/index.js');
-
+const { parseRecipeWithSchema } = require('./src/utils/recipe.js');
 const program = new Command();
 
 program
@@ -20,17 +20,6 @@ const options = program.opts();
 const configFile = options.conf;
 const recipeFile = options.recipe;
 
-// Function to parse YAML file
-function parseYamlFile(filePath) {
-  try {
-    const fileContents = fs.readFileSync(filePath, 'utf8');
-    return yaml.load(fileContents);
-  } catch (e) {
-    console.error(`Error reading or parsing YAML file: ${e.message}`);
-    process.exit(1);
-  }
-}
-
 // Function to parse JSON file
 function parseJsonFile(filePath) {
   try {
@@ -42,7 +31,18 @@ function parseJsonFile(filePath) {
   }
 }
 
+// Function to parse YAML file
+function parseYamlFile(filePath) {
+  try {
+    const fileContents = fs.readFileSync(filePath, 'utf8');
+    return yaml.load(fileContents);
+  } catch (e) {
+    console.error(`Error reading or parsing YAML file: ${e.message}`);
+    process.exit(1);
+  }
+}
+
 const config = parseJsonFile(configFile);
-const recipe = parseYamlFile(recipeFile);
+const recipe = parseRecipeWithSchema( parseYamlFile(recipeFile) );
 
 main(config, recipe);
