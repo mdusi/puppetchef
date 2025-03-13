@@ -45,6 +45,6 @@ function parseYamlFile(filePath) {
 }
 
 const config = parseJsonFile(configFile);
-const recipe = parseRecipeWithSchema( parseYamlFile(recipeFile) );
+const recipe = parseRecipeWithSchema(parseYamlFile(recipeFile), debug);
 
 main(config, recipe, debug);

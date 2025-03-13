@@ -73,7 +73,7 @@ async function main(conf, recipe, debug = false) {
       try {
         // Perform element selection and action
         const elem = await select(page, op.type, op.element, op.arg);
-        await action(elem, op.action, op.value);
+        await action(elem, op.action.type, op.action.value);
       } catch (error) {
         console.log(error);
         // If operation is required and fails, set error code and break

@@ -1,60 +1,49 @@
 const Ajv = require('ajv');
 const ajv = new Ajv({
-  useDefaults: true  // This enables automatic default value assignment
+  useDefaults: true,
+  // coerceTypes: true,
+  removeAdditional: true
 });
 
-/*
-const opSchema = {
-  $id: 'opSchema',
-  type: 'object',
-  properties: {
-    type: { 
-      type: 'string',
-      enum: ['wait', 'polling', 'element'],
-      default: 'element'  // Most common type
-    },
-    element: { type: 'string' },
-    action: { 
-      type: 'string',
-      enum: ['fill_out', 'click', ''],
-      default: ''
-    },
-    value: { type: 'string' },
-    arg: { type: 'string' },
-    required: { 
-      type: 'boolean',
-      default: true
-    }
-  },
-  required: ['type', 'element', 'action'],
-  additionalProperties: false
-};
-*/
 
+// Define the schema for actions
+const actionSchema = {
+    $id: 'actionSchema',
+    toAction: true,
+    type: ["string", "object"],
+    properties: {
+        type: { 
+            type: "string",
+            enum: ['click', 'fill_out', '']
+        },
+        value: { type: "string" }
+    },
+    required: ["type", "value"],
+    default: {
+        type: '',
+        value: ''
+    }
+};
+
+// Define the schema for operations
 const opSchema = {
   $id: 'opSchema',
   type: 'object',
   properties: {
-    type: { 
+    type: {
       type: 'string',
       enum: ['wait', 'polling', 'element'],
-      default: 'element'  // Most common type
+      default: 'element'
     },
     element: { type: 'string' },
-    action: { 
-      type: 'string',
-      enum: ['fill_out', 'click', ''],
-      default: ''
-    },
-    value: { type: 'string' },
+    action: actionSchema,
     arg: { type: 'string' },
-    required: { 
+    required: {
       type: 'boolean',
       default: true
     }
   },
-  required: ['type', 'element', 'action'],
-  additionalProperties: false
+  required: ['element', 'action']
 };
 
 const stepSchema = {
@@ -64,7 +53,7 @@ const stepSchema = {
     name: { type: 'string' },
     ops: { 
       type: 'array', 
-      items: { $ref: 'opSchema' },
+      items: opSchema,
       default: []
     }
   },
@@ -72,21 +61,31 @@ const stepSchema = {
 };
 
 const recipeSchema = {
-  $id: 'recipeSchema',
   type: 'object',
   properties: {
-    name: { type: 'string' },
     url: { type: 'string' },
-    steps: { 
-      type: 'array', 
-      items: { $ref: 'stepSchema' },
-      default: []
+    name: { type: 'string'},
+    steps: {
+      type: 'array',
+      items: stepSchema
     }
   },
-  required: ['name', 'url', 'steps']
+  required: ['url', 'name', 'steps']
 };
 
+ajv.addKeyword({
+    keyword: "toAction",
+    type: "string",
+    compile: () => (data, dataPath) => {
+      if (typeof data === "string")
+        dataPath.parentData[dataPath.parentDataProperty] = { type: data, value: "" };
+      return true;
+    }
+  }
+);
+
 // Add schemas to ajv
+ajv.addSchema(actionSchema);
 ajv.addSchema(opSchema);
 ajv.addSchema(stepSchema);
 
@@ -94,14 +93,15 @@ ajv.addSchema(stepSchema);
 const validateRecipe = ajv.compile(recipeSchema);
 
 /**
- * Validates and parses an automation recipe against the predefined schema
- * @param {Object} recipe - The recipe object to validate
- * @returns {Object} The validated recipe object
- * @throws {Error} If the recipe doesn't match the schema
+ * Validates and transforms a recipe according to the schema
+ * @param {Object} recipe - The recipe to validate
+ * @param {boolean} debug - Whether to enable debug logging
+ * @returns {Object} The validated and transformed recipe
  */
-function parseRecipeWithSchema(recipe) {
-  console.log('Before validation:', JSON.stringify(recipe, null, 2));
-  
+function parseRecipeWithSchema(recipe, debug = false) {
+  if (debug)
+    console.log('Debug: Parsing recipe:', JSON.stringify(recipe, null, 2));
+
   const valid = validateRecipe(recipe);
   
   if (!valid) {
@@ -110,8 +110,10 @@ function parseRecipeWithSchema(recipe) {
     ).join('; ');
     throw new Error(`Invalid recipe format: ${errors}`);
   }
-  
-  console.log('After validation (with defaults):', JSON.stringify(recipe, null, 2));
+
+  if (debug)
+    console.log('Debug: Transformed recipe:', JSON.stringify(recipe, null, 2));
+
   return recipe;
 }
 
