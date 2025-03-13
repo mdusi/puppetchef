@@ -5,7 +5,12 @@
  * It takes a configuration object and a recipe object as input, then executes the specified
  * web automation steps sequentially.
  * 
+ * The module is designed to work with recipe files that define a series of steps,
+ * each containing operations to perform on web elements. It supports various element
+ * selection strategies and common web interactions.
+ * 
  * @module puppetchef
+ * @requires puppeteer
  */
 
 const puppeteer = require('puppeteer');
@@ -15,20 +20,62 @@ const { action, select } = require('./utils/helper.js');
 /**
  * Executes a web automation recipe using Puppeteer
  * 
+ * This function orchestrates the execution of a web automation recipe by:
+ * 1. Launching a Puppeteer browser instance with the provided configuration
+ * 2. Navigating to the specified URL
+ * 3. Executing each step in the recipe sequentially
+ * 4. Handling errors and cleanup
+ * 
  * @param {Object} conf - Configuration object for browser settings
+ * @param {Object} [conf.browser] - Puppeteer browser launch options
  * @param {Object} recipe - Recipe object containing automation steps
  * @param {string} recipe.url - The URL to navigate to
+ * @param {string} recipe.name - The name of the recipe
  * @param {Array<Object>} recipe.steps - Array of steps to execute
  * @param {string} recipe.steps[].name - Name of the step
  * @param {Array<Object>} recipe.steps[].ops - Operations to perform in the step
- * @param {Object} recipe.steps[].ops[] - Individual operation object
- * @param {string} recipe.steps[].ops[].type - Type of selector
- * @param {string} recipe.steps[].ops[].element - Element selector
- * @param {string} recipe.steps[].ops[].action - Action to perform
- * @param {string} [recipe.steps[].ops[].value] - Value for the action (masked in logs)
- * @param {string} [recipe.steps[].ops[].arg] - Additional argument for selection
- * @param {boolean} [recipe.steps[].ops[].required] - Whether operation is required
+ * @param {Object} recipe.steps[].ops[].select - Element selector configuration
+ * @param {Object} recipe.steps[].ops[].action - Action to perform
+ * @param {boolean} [recipe.steps[].ops[].required=true] - Whether operation is required
+ * @param {boolean} [debug=false] - Whether to enable debug logging
  * @returns {Promise<void>}
+ * @throws {Error} If recipe execution fails
+ * 
+ * @example
+ * // Basic recipe example
+ * const recipe = {
+ *   url: "https://example.com",
+ *   name: "Login Test",
+ *   steps: [{
+ *     name: "Login",
+ *     ops: [{
+ *       select: "#username",
+ *       action: { type: "fill_out", value: "testuser" }
+ *     }, {
+ *       select: "#password",
+ *       action: { type: "fill_out", value: "password123" }
+ *     }, {
+ *       select: "#submit",
+ *       action: "click"
+ *     }]
+ *   }]
+ * };
+ * 
+ * // Configuration example
+ * const conf = {
+ *   browser: {
+ *     headless: false,
+ *     defaultViewport: { width: 1920, height: 1080 }
+ *   }
+ * };
+ * 
+ * // Execute the recipe
+ * try {
+ *   await main(conf, recipe, true);
+ * } catch (error) {
+ *   console.error('Recipe execution failed:', error);
+ *   process.exit(1);
+ * }
  */
 async function main(conf, recipe, debug = false) {
   if (debug) {
