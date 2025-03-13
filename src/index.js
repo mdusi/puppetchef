@@ -72,7 +72,7 @@ async function main(conf, recipe, debug = false) {
       
       try {
         // Perform element selection and action
-        const elem = await select(page, op.type, op.element, op.arg);
+        const elem = await select(page, op.select.type, op.select.element, op.select.value);
         await action(elem, op.action.type, op.action.value);
       } catch (error) {
         console.log(error);

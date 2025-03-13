@@ -1,7 +1,6 @@
 const Ajv = require('ajv');
 const ajv = new Ajv({
   useDefaults: true,
-  // coerceTypes: true,
   removeAdditional: true
 });
 
@@ -25,25 +24,35 @@ const actionSchema = {
     }
 };
 
+const selectSchema = {
+    $id: 'selectSchema',
+    toSelect: true,
+    type: ["string", "object"],
+    properties: {
+        type: {
+            type: 'string',
+            enum: ['wait', 'polling', 'element'],
+            default: 'element'
+        },
+        element: { type: 'string' },
+        value: { type: 'string', default: '' }
+    },
+    required: ['type', 'element', 'value']
+};
+
 // Define the schema for operations
 const opSchema = {
   $id: 'opSchema',
   type: 'object',
   properties: {
-    type: {
-      type: 'string',
-      enum: ['wait', 'polling', 'element'],
-      default: 'element'
-    },
-    element: { type: 'string' },
+    select: selectSchema,
     action: actionSchema,
-    arg: { type: 'string' },
     required: {
       type: 'boolean',
       default: true
     }
   },
-  required: ['element', 'action']
+  required: ['select', 'action']
 };
 
 const stepSchema = {
@@ -84,7 +93,19 @@ ajv.addKeyword({
   }
 );
 
+ajv.addKeyword({
+    keyword: "toSelect",
+    type: "string",
+    compile: () => (data, dataPath) => {
+      if (typeof data === "string")
+        dataPath.parentData[dataPath.parentDataProperty] = { type: "element", element: data, value: "" };
+      return true;
+    }
+  }
+);
+
 // Add schemas to ajv
+ajv.addSchema(selectSchema);
 ajv.addSchema(actionSchema);
 ajv.addSchema(opSchema);
 ajv.addSchema(stepSchema);
