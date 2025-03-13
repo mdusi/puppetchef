@@ -12,11 +12,13 @@ program
   .version('1.0.0')
   .description('Puppetchef CLI')
   .option('-c, --conf <file>', 'config file', 'puppetchefrc')
+  .option('-d, --debug', 'enable debug logging', false)
   .requiredOption('-i, --recipe <file>', 'recipe file (yaml format)')
   .parse(process.argv);
 
 const options = program.opts();
 
+const debug = options.debug;
 const configFile = options.conf;
 const recipeFile = options.recipe;
 
@@ -45,4 +47,4 @@ function parseYamlFile(filePath) {
 const config = parseJsonFile(configFile);
 const recipe = parseRecipeWithSchema( parseYamlFile(recipeFile) );
 
-main(config, recipe);
+main(config, recipe, debug);

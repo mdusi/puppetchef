@@ -30,10 +30,11 @@ const { action, select } = require('./utils/helper.js');
  * @param {boolean} [recipe.steps[].ops[].required] - Whether operation is required
  * @returns {Promise<void>}
  */
-async function main(conf, recipe) {
-  // Log initialization information
-  console.log(`Config file: ${conf}`);
-  console.log(`Following recipe: ${recipe}`);
+async function main(conf, recipe, debug = false) {
+  if (debug) {
+    console.log(`Config file: ${conf}`);
+    console.log(`Following recipe: ${recipe}`);
+  }
 
   // Initialize browser with provided configuration
   const browser = await puppeteer.launch({
@@ -47,14 +48,16 @@ async function main(conf, recipe) {
   let retcode = 0
 
   // Navigate to the target URL
-  await page.goto(recipe.url, {waitUntil: 'networkidle0'});
+  await page.goto(recipe.url, { waitUntil: 'networkidle0' });
 
   // Execute recipe steps
   for (const step of recipe.steps) {
-    console.log(step.name);
+    if (debug)
+      console.log(step.name);
     // Skip steps with no operations
     if (!step.ops || step.ops.length === 0) {
-      console.log('No operations to perform for this step.');
+      if (debug)
+        console.log('No operations to perform for this step.');
       continue;
     }
     
@@ -64,7 +67,8 @@ async function main(conf, recipe) {
       const maskedOp = {...op};
       if ('value' in op)
         maskedOp.value = '*'.repeat(8);
-      console.log(maskedOp);
+      if (debug)
+        console.log(maskedOp);
       
       try {
         // Perform element selection and action

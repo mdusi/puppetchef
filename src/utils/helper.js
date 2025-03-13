@@ -4,17 +4,31 @@ async function select (page, elType, elValue, elArg) {
             const waitTime = parseInt(elValue, 10);
             return await new Promise(r => setTimeout(r, waitTime));
         }
-        case 'polling':
+        case 'polling': {
+            // Listen for console messages from the browser
+            page.on('console', msg => console.log('Browser log:', msg.text()));
+            
             return await page.waitForFunction(
                 (selector, text) => {
-                    return document.querySelector(selector).innerText.includes(text);
+                    console.log(`Checking selector: ${selector} for text: ${text}`);
+                    const element = document.querySelector(selector);
+                    if (!element) {
+                        console.log(`Element not found: ${selector}`);
+                        return false;
+                    }
+                    const hasText = element.innerText.includes(text);
+                    console.log(`Text "${text}" ${hasText ? 'found' : 'not found'} in element`);
+                    return hasText;
                 },
-                {},
-                elValue, elArg
+                { polling: 1000 },  // Poll every second for better logging visibility
+                elValue,
+                elArg
             );
+        }
+        case 'element':
+          return await page.locator(elValue);
         default:
-            return await page.locator(elValue);
-            // throw new Error(`Unsupported element type: ${elType}`);
+          throw new Error(`Unsupported element type: ${elType}`);
     }
 }
 
