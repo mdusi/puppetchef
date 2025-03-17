@@ -14,6 +14,7 @@
 
 const { Command } = require('commander');
 const fs = require('fs');
+const path = require('path');
 const yaml = require('js-yaml');
 const { main } = require('./src/index.js');
 const { parseRecipeWithSchema } = require('./src/utils/recipe.js');
@@ -33,6 +34,7 @@ program
   .description('Puppetchef CLI')
   .option('-c, --conf <file>', 'config file', 'puppetchefrc')
   .option('-v, --verbose', 'enable verbose logging', false)
+  .option('-e, --extra <file>', 'plugins file')
   .requiredOption('-i, --recipe <file>', 'recipe file (yaml format)')
   .parse(process.argv);
 
@@ -41,6 +43,7 @@ const options = program.opts();
 const verbose = options.verbose;
 const configFile = options.conf;
 const recipeFile = options.recipe;
+const pluginsFile = options.extra;
 
 /**
  * Parses a JSON configuration file
@@ -84,9 +87,15 @@ function parseYamlFile(filePath) {
   }
 }
 
+
+
 // Parse configuration and recipe files
 const config = parseJsonFile(configFile);
 const recipe = parseRecipeWithSchema(parseYamlFile(recipeFile), verbose);
 
+// Import plugins from the specified file
+const plugins = pluginsFile ? require(path.resolve(process.cwd(), pluginsFile)) : null;
+
+
 // Execute the recipe
-main(config, recipe, verbose);
+main(config, recipe, verbose, plugins);

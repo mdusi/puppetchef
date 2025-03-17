@@ -28,12 +28,13 @@ const actionSchema = {
             type: "string",
             enum: ['click', 'fill_out', '']
         },
-        value: { type: "string" }
+        data: { type: 'object', default: {} }
+        // value: { type: "string" }
     },
-    required: ["type", "value"],
+    required: ["type", "data"],
     default: {
         type: '',
-        value: ''
+        data: {}
     }
 };
 
@@ -49,13 +50,12 @@ const selectSchema = {
     properties: {
         type: {
             type: 'string',
-            enum: ['wait', 'polling', 'element'],
             default: 'element'
         },
         element: { type: 'string' },
-        value: { type: 'string', default: '' }
+        data: { type: 'object', default: {} }
     },
-    required: ['type', 'element', 'value']
+    required: ['type', 'element', 'data']
 };
 
 /**

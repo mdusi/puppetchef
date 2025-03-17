@@ -77,7 +77,7 @@ const { action, select } = require('./utils/helper.js');
  *   process.exit(1);
  * }
  */
-async function main(conf, recipe, verbose = false) {
+async function main(conf, recipe, verbose = false, plugins = null) {
   if (verbose) {
     console.log(`Config file: ${conf}`);
     console.log(`Following recipe: ${recipe}`);
@@ -111,16 +111,17 @@ async function main(conf, recipe, verbose = false) {
     // Execute each operation in the step
     for (const op of step.ops) {
       // Create a masked version of the operation for logging
-      const maskedOp = {...op};
-      if ('value' in op)
-        maskedOp.value = '*'.repeat(8);
-      if (verbose)
+      if (verbose) {
+        const maskedOp = {...op};
+        if ('value' in op)
+          maskedOp.value = '*'.repeat(8);
         console.log(maskedOp);
+      }
       
       try {
         // Perform element selection and action
-        const elem = await select(page, op.select.type, op.select.element, op.select.value);
-        await action(elem, op.action.type, op.action.value);
+        const elem = await select(page, op.select, plugins);
+        await action(elem, op.action, plugins);
       } catch (error) {
         console.log(error);
         // If operation is required and fails, set error code and break
