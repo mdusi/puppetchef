@@ -24,7 +24,7 @@ const program = new Command();
  * 
  * Available options:
  * - -c, --conf <file>    : Configuration file path (default: puppetchefrc)
- * - -d, --debug         : Enable debug logging (default: false)
+ * - -v, --verbose       : Enable verbose logging (default: false)
  * - -i, --recipe <file> : Recipe file path in YAML format (required)
  */
 program
@@ -32,13 +32,13 @@ program
   .version('1.0.0')
   .description('Puppetchef CLI')
   .option('-c, --conf <file>', 'config file', 'puppetchefrc')
-  .option('-d, --debug', 'enable debug logging', false)
+  .option('-v, --verbose', 'enable verbose logging', false)
   .requiredOption('-i, --recipe <file>', 'recipe file (yaml format)')
   .parse(process.argv);
 
 const options = program.opts();
 
-const debug = options.debug;
+const verbose = options.verbose;
 const configFile = options.conf;
 const recipeFile = options.recipe;
 
@@ -86,7 +86,7 @@ function parseYamlFile(filePath) {
 
 // Parse configuration and recipe files
 const config = parseJsonFile(configFile);
-const recipe = parseRecipeWithSchema(parseYamlFile(recipeFile), debug);
+const recipe = parseRecipeWithSchema(parseYamlFile(recipeFile), verbose);
 
 // Execute the recipe
-main(config, recipe, debug);
+main(config, recipe, verbose);

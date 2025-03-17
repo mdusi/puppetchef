@@ -77,8 +77,8 @@ const { action, select } = require('./utils/helper.js');
  *   process.exit(1);
  * }
  */
-async function main(conf, recipe, debug = false) {
-  if (debug) {
+async function main(conf, recipe, verbose = false) {
+  if (verbose) {
     console.log(`Config file: ${conf}`);
     console.log(`Following recipe: ${recipe}`);
   }
@@ -99,11 +99,11 @@ async function main(conf, recipe, debug = false) {
 
   // Execute recipe steps
   for (const step of recipe.steps) {
-    if (debug)
+    if (verbose)
       console.log(step.name);
     // Skip steps with no operations
     if (!step.ops || step.ops.length === 0) {
-      if (debug)
+      if (verbose)
         console.log('No operations to perform for this step.');
       continue;
     }
@@ -114,7 +114,7 @@ async function main(conf, recipe, debug = false) {
       const maskedOp = {...op};
       if ('value' in op)
         maskedOp.value = '*'.repeat(8);
-      if (debug)
+      if (verbose)
         console.log(maskedOp);
       
       try {
