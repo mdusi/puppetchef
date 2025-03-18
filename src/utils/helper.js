@@ -77,11 +77,11 @@ async function select (page, sel, plugins = null) {
             return await new Promise(r => setTimeout(r, waitTime));
         }
         case 'element':
-          return await page.locator(sValue);
+          return page.locator(sValue);
         default: {
             if (plugins && plugins[sType])
                 return await plugins[sType](page, sValue, sData);
-            throw new Error(`Unsupported element type: ${sType}`);
+            throw new Error(`Unsupported select type: ${sType}`);
         }
     }
 }
