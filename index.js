@@ -34,6 +34,7 @@ program
   .description('Puppetchef CLI')
   .option('-c, --conf <file>', 'config file', 'puppetchefrc')
   .option('-v, --verbose', 'enable verbose logging', false)
+  .option('-n, --dry-run', 'validate recipe only', false)
   .option('-e, --extra <file>', 'plugins file')
   .requiredOption('-i, --recipe <file>', 'recipe file (yaml format)')
   .parse(process.argv);
@@ -44,7 +45,7 @@ const verbose = options.verbose;
 const configFile = options.conf;
 const recipeFile = options.recipe;
 const pluginsFile = options.extra;
-
+const dryRun = options.dryRun;
 /**
  * Parses a JSON configuration file
  * 
@@ -98,4 +99,5 @@ const plugins = pluginsFile ? require(path.resolve(process.cwd(), pluginsFile)) 
 
 
 // Execute the recipe
-main(config, recipe, verbose, plugins);
+if (!dryRun)
+  main(config, recipe, verbose, plugins);

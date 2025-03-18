@@ -9,6 +9,7 @@ A powerful web automation tool that uses Puppeteer to execute web automation rec
 - **Plugin System**: Extend functionality with custom plugins
 - **Configuration Management**: Flexible configuration through JSON files
 - **Verbose Logging**: Detailed execution logs for debugging
+- **Dry Run Mode**: Validate recipes without executing them
 
 ## Installation
 
@@ -26,8 +27,25 @@ puppetchef -i recipe.yaml [options]
 
 - `-i, --recipe <file>`: Recipe file in YAML format (required)
 - `-c, --conf <file>`: Configuration file (default: puppetchefrc)
-- `-v, --verbose`: Enable verbose logging
+- `-v, --verbose`: Enable verbose logging (default: false)
+- `-n, --dry-run`: Validate recipe only, don't execute (default: false)
 - `-e, --extra <file>`: Path to plugins file
+
+### Examples
+
+```bash
+# Basic usage with a recipe file
+puppetchef -i recipe.yaml
+
+# With configuration file and verbose logging
+puppetchef -i recipe.yaml -c config.json -v
+
+# Validate recipe without executing
+puppetchef -i recipe.yaml -n
+
+# With custom plugins
+puppetchef -i recipe.yaml -e plugins.js
+```
 
 ### Configuration File (puppetchefrc)
 

@@ -76,8 +76,8 @@ async function select (page, sel, plugins = null) {
             const waitTime = parseInt(sValue, 10);
             return await new Promise(r => setTimeout(r, waitTime));
         }
-        case 'element':
-          return page.locator(sValue);
+        case 'element': 
+          return page.locator(sValue).setTimeout(sData.timeout);
         default: {
             if (plugins && plugins[sType])
                 return await plugins[sType](page, sValue, sData);
