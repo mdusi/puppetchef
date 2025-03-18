@@ -21,71 +21,68 @@
  * - element: Selects an element using a CSS selector
  * 
  * @param {import('puppeteer').Page} page - The Puppeteer page object
- * @param {string} elType - The type of selection strategy:
- *                          - 'wait': Wait for a specified time
- *                          - 'polling': Wait for text to appear in an element
- *                          - 'element': Select by CSS selector
- * @param {string} elValue - The value to use for selection:
- *                          - For 'wait': Time in milliseconds
- *                          - For 'polling': CSS selector to check
- *                          - For 'element': CSS selector to select
- * @param {string} [elArg] - Additional argument:
- *                          - For 'polling': Text to wait for in the element
- *                          - Not used for other types
+ * @param {Object} sel - Selection configuration object
+ * @param {string} sel.type - The type of selection strategy:
+ *                            - 'wait': Wait for a specified time
+ *                            - 'polling': Wait for text to appear in an element
+ *                            - 'element': Select by CSS selector
+ * @param {string} sel.element - The value to use for selection:
+ *                               - For 'wait': Time in milliseconds
+ *                               - For 'polling': CSS selector to check
+ *                               - For 'element': CSS selector to select
+ * @param {string} [sel.value] - Additional argument:
+ *                              - For 'polling': Text to wait for in the element
+ *                              - Not used for other types
  * @returns {Promise<import('puppeteer').ElementHandle|void>} The selected element or void for wait
  * @throws {Error} If the element type is not supported
  * 
  * @example
  * // Wait for 5 seconds
- * await select(page, 'wait', '5000');
+ * await select(page, { type: 'wait', element: '5000' });
  * 
  * // Wait for text to appear in an element
- * await select(page, 'polling', '#status', 'Ready');
+ * await select(page, { 
+ *   type: 'polling', 
+ *   element: '#status', 
+ *   value: 'Ready' 
+ * });
  * 
  * // Select an element by CSS selector
- * const button = await select(page, 'element', '#submit');
+ * const button = await select(page, { 
+ *   type: 'element', 
+ *   element: '#submit' 
+ * });
  * 
  * // Complete example with error handling
  * try {
- *   const element = await select(page, 'element', '#non-existent');
+ *   const element = await select(page, { 
+ *     type: 'element', 
+ *     element: '#non-existent' 
+ *   });
  *   if (element) {
- *     await action(element, 'click');
+ *     await action(element, { type: 'click' });
  *   }
  * } catch (error) {
  *   console.error('Failed to select element:', error);
  * }
  */
-async function select (page, elType, elValue, elArg) {
-    switch (elType) {
+async function select (page, sel, plugins = null) {
+    const sType = sel.type;
+    const sValue = sel.element;
+    const sData = sel.data || {};
+
+    switch (sType) {
         case 'wait': {
-            const waitTime = parseInt(elValue, 10);
+            const waitTime = parseInt(sValue, 10);
             return await new Promise(r => setTimeout(r, waitTime));
         }
-        case 'polling': {
-            // Listen for console messages from the browser
-            page.on('console', msg => console.log('Browser log:', msg.text()));
-            
-            return await page.waitForFunction(
-                (selector, text) => {
-                    console.log(`Checking selector: ${selector} for text: ${text}`);
-                    const element = document.querySelector(selector);
-                    if (!element) {
-                        console.log(`Element not found: ${selector}`);
-                        return false;
-                    }
-                    const hasText = element.innerText.includes(text);
-                    console.log(`Text "${text}" ${hasText ? 'found' : 'not found'} in element`);
-                    return hasText;
-                },
-                { polling: 1000 },  // Poll every second for better logging visibility
-                elValue,
-                elArg
-            );
-        }
         case 'element':
-          return await page.locator(elValue);
-        default:
-          throw new Error(`Unsupported element type: ${elType}`);
+          return page.locator(sValue);
+        default: {
+            if (plugins && plugins[sType])
+                return await plugins[sType](page, sValue, sData);
+            throw new Error(`Unsupported select type: ${sType}`);
+        }
     }
 }
 
@@ -100,39 +97,55 @@ async function select (page, elType, elValue, elArg) {
  * and provides a simplified interface for common web interactions.
  * 
  * @param {import('puppeteer').ElementHandle} elem - The element to perform the action on
- * @param {string} elAction - The type of action to perform:
- *                           - 'fill_out': Fill an input field
- *                           - 'click': Click the element
- * @param {string} [elValue] - The value to use for the action:
- *                            - For 'fill_out': Text to fill in the field
- *                            - Not used for other actions
+ * @param {Object} act - Action configuration object
+ * @param {string} act.type - The type of action to perform:
+ *                            - 'fill_out': Fill an input field
+ *                            - 'click': Click the element
+ * @param {string} [act.value] - The value to use for the action:
+ *                              - For 'fill_out': Text to fill in the field
+ *                              - Not used for other actions
  * @returns {Promise<void>}
  * @throws {Error} If the action fails (e.g., element not clickable)
  * 
  * @example
  * // Fill out a form field
- * await action(inputElement, 'fill_out', 'John Doe');
+ * await action(inputElement, { 
+ *   type: 'fill_out', 
+ *   value: 'John Doe' 
+ * });
  * 
  * // Click a button
- * await action(buttonElement, 'click');
+ * await action(buttonElement, { 
+ *   type: 'click' 
+ * });
  * 
  * // Complete example with error handling
  * try {
- *   const element = await select(page, 'element', '#submit');
- *   await action(element, 'click');
+ *   const element = await select(page, { 
+ *     type: 'element', 
+ *     element: '#submit' 
+ *   });
+ *   await action(element, { 
+ *     type: 'click' 
+ *   });
  * } catch (error) {
  *   console.error('Failed to perform action:', error);
  * }
  */
-async function action (elem, elAction, elValue) {
-    switch (elAction) {
+async function action (elem, act, plugins = null) {
+    const aType = act.type;
+    const aData = act.data;
+
+    switch (aType) {
         case 'fill_out':
-            await elem.fill(elValue);
+            await elem.fill(aData.text);
             break;
         case 'click':
             await elem.click();
             break;
         default:
+            if (plugins && plugins[aType])
+                return await plugins[aType](elem, aData);
             break;
     }   
 }
