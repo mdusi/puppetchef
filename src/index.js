@@ -125,10 +125,10 @@ async function main(conf, recipe, verbose = false, plugins = null) {
       } catch (error) {
         console.log(error);
         // If operation is required and fails, set error code and break
-        if (!op.required || op.required == true) {
-          retcode = 255;
-          break;
-        }
+        if (op.required == false) 
+          continue;
+        retcode = 255;
+        break;
       }
     }
 

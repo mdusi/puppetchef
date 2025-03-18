@@ -11,7 +11,8 @@
 const Ajv = require('ajv');
 const ajv = new Ajv({
   useDefaults: true,
-  removeAdditional: true
+  removeAdditional: true,
+  allowUnionTypes: true
 });
 
 /**
@@ -29,7 +30,6 @@ const actionSchema = {
             enum: ['click', 'fill_out', '']
         },
         data: { type: 'object', default: {} }
-        // value: { type: "string" }
     },
     required: ["type", "data"],
     default: {
@@ -37,6 +37,7 @@ const actionSchema = {
         data: {}
     }
 };
+
 
 /**
  * Schema for defining element selectors in a recipe
@@ -53,7 +54,14 @@ const selectSchema = {
             default: 'element'
         },
         element: { type: 'string' },
-        data: { type: 'object', default: {} }
+        data: {
+          type: 'object',
+          properties: {
+            timeout: { type: 'number', default: 30000 }
+          },
+          default: { timeout: 30000 },
+          required: ['timeout']
+        }
     },
     required: ['type', 'element', 'data']
 };
@@ -138,7 +146,7 @@ ajv.addKeyword({
     type: "string",
     compile: () => (data, dataPath) => {
       if (typeof data === "string")
-        dataPath.parentData[dataPath.parentDataProperty] = { type: "element", element: data, value: "" };
+        dataPath.parentData[dataPath.parentDataProperty] = { type: "element", element: data, data: { timeout: 30000 } };
       return true;
     }
   }
