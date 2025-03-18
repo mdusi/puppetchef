@@ -9,7 +9,6 @@ A powerful web automation tool that uses Puppeteer to execute web automation rec
 - **Plugin System**: Extend functionality with custom plugins
 - **Configuration Management**: Flexible configuration through JSON files
 - **Verbose Logging**: Detailed execution logs for debugging
-- **Error Handling**: Graceful error handling with configurable retry options
 
 ## Installation
 
@@ -57,11 +56,13 @@ steps:
       - select: "#username"
         action: 
           type: "fill_out"
-          value: "testuser"
+          data:
+            text: "testuser"
       - select: "#password"
         action: 
           type: "fill_out"
-          value: "password123"
+          data:
+            text: "password123"
       - select: "#submit"
         action: "click"
 ```
@@ -71,18 +72,15 @@ steps:
 You can use variables in your recipes:
 
 ```yaml
-variables:
-  user_data:
-    name: John
-    age: 30
-
 steps:
   - name: "Fill Form"
     ops:
       - select: "#username"
         action: 
           type: "fill_out"
-          value: ${variables.user_data.name}
+          data:
+            name: John
+            age: 30
 ```
 
 ### Plugins
@@ -108,7 +106,6 @@ steps:
       - select: "#target"
         action: 
           type: "customAction"
-          plugin: true
 ```
 
 ## Development
