@@ -121,10 +121,10 @@ async function main(conf, recipe, verbose = false, plugins = null) {
       try {
         // Perform element selection and action
         const elem = await select(page, op.select, plugins);
-        await action(elem, op.action, plugins);
+        await action(page, elem, op.action, plugins);
       } catch (error) {
         console.log(error);
-        // If operation is required and fails, set error code and break
+        // If operation is not required, continue
         if (op.required == false) 
           continue;
         retcode = 255;
