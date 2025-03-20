@@ -132,7 +132,7 @@ async function select (page, sel, plugins = null) {
  *   console.error('Failed to perform action:', error);
  * }
  */
-async function action (elem, act, plugins = null) {
+async function action (page, elem, act, plugins = null) {
     const aType = act.type;
     const aData = act.data;
 
@@ -145,7 +145,7 @@ async function action (elem, act, plugins = null) {
             break;
         default:
             if (plugins && plugins[aType])
-                return await plugins[aType](elem, aData);
+                return await plugins[aType](page, elem, aData);
             break;
     }   
 }

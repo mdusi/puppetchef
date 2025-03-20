@@ -25,10 +25,7 @@ const actionSchema = {
     toAction: true,
     type: ["string", "object"],
     properties: {
-        type: { 
-            type: "string",
-            enum: ['click', 'fill_out', '']
-        },
+        type: { type: "string" },
         data: { type: 'object', default: {} }
     },
     required: ["type", "data"],

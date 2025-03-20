@@ -13,9 +13,10 @@
  * @requires puppeteer
  */
 
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra')
 
 const { action, select } = require('./utils/helper.js');
+
 
 /**
  * Executes a web automation recipe using Puppeteer
@@ -85,12 +86,9 @@ async function main(conf, recipe, verbose = false, plugins = null) {
 
   // Initialize browser with provided configuration
   const browser = await puppeteer.launch({
-      ...(conf.browser || {}),
+      ...(conf || {}),
   })
   const page = await browser.newPage()
-
-  // Configure viewport for consistent rendering
-  await page.setViewport({ width: 1920, height: 1080 });
 
   let retcode = 0
 
@@ -121,10 +119,10 @@ async function main(conf, recipe, verbose = false, plugins = null) {
       try {
         // Perform element selection and action
         const elem = await select(page, op.select, plugins);
-        await action(elem, op.action, plugins);
+        await action(page, elem, op.action, plugins);
       } catch (error) {
         console.log(error);
-        // If operation is required and fails, set error code and break
+        // If operation is not required, continue
         if (op.required == false) 
           continue;
         retcode = 255;
