@@ -86,12 +86,9 @@ async function main(conf, recipe, verbose = false, plugins = null) {
 
   // Initialize browser with provided configuration
   const browser = await puppeteer.launch({
-      ...(conf.browser || {}),
+      ...(conf || {}),
   })
   const page = await browser.newPage()
-
-  // Configure viewport for consistent rendering
-  await page.setViewport({ width: 1920, height: 1080 });
 
   let retcode = 0
 

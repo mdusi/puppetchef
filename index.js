@@ -88,8 +88,6 @@ function parseYamlFile(filePath) {
   }
 }
 
-
-
 // Parse configuration and recipe files
 const config = parseJsonFile(configFile);
 const recipe = parseRecipeWithSchema(parseYamlFile(recipeFile), verbose);
@@ -97,7 +95,8 @@ const recipe = parseRecipeWithSchema(parseYamlFile(recipeFile), verbose);
 // Import plugins from the specified file
 const plugins = pluginsFile ? require(path.resolve(process.cwd(), pluginsFile)) : null;
 
+if (dryRun)
+  process.exit(0);
 
 // Execute the recipe
-if (!dryRun)
-  main(config, recipe, verbose, plugins);
+main(config, recipe, verbose, plugins);

@@ -53,12 +53,10 @@ Create a JSON configuration file to customize browser behavior:
 
 ```json
 {
-  "browser": {
-    "headless": false,
-    "defaultViewport": {
-      "width": 1920,
-      "height": 1080
-    }
+  "headless": false,
+  "defaultViewport": {
+    "width": 1920,
+    "height": 1080
   }
 }
 ```
