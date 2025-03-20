@@ -18,7 +18,9 @@
     "ajv": "^8.17.1",
     "commander": "^13.1.0",
     "js-yaml": "^4.1.0",
-    "puppeteer": "^24.1.1"
+    "puppeteer": "^24.1.1",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-user-preferences": "^2.4.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

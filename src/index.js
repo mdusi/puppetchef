@@ -13,9 +13,10 @@
  * @requires puppeteer
  */
 
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra')
 
 const { action, select } = require('./utils/helper.js');
+
 
 /**
  * Executes a web automation recipe using Puppeteer
