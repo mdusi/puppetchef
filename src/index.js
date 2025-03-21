@@ -3,9 +3,9 @@
  * 
  * This module provides functionality to execute web automation recipes using Puppeteer.
  * It takes a configuration object and a recipe object as input, then executes the specified
- * web automation steps sequentially.
+ * web automation tasks sequentially.
  * 
- * The module is designed to work with recipe files that define a series of steps,
+ * The module is designed to work with recipe files that define a series of tasks,
  * each containing operations to perform on web elements. It supports various element
  * selection strategies and common web interactions.
  * 
@@ -24,20 +24,20 @@ const { action, select } = require('./utils/helper.js');
  * This function orchestrates the execution of a web automation recipe by:
  * 1. Launching a Puppeteer browser instance with the provided configuration
  * 2. Navigating to the specified URL
- * 3. Executing each step in the recipe sequentially
+ * 3. Executing each task in the recipe sequentially
  * 4. Handling errors and cleanup
  * 
  * @param {Object} conf - Configuration object for browser settings
  * @param {Object} [conf.browser] - Puppeteer browser launch options
- * @param {Object} recipe - Recipe object containing automation steps
+ * @param {Object} recipe - Recipe object containing automation tasks
  * @param {string} recipe.url - The URL to navigate to
  * @param {string} recipe.name - The name of the recipe
- * @param {Array<Object>} recipe.steps - Array of steps to execute
- * @param {string} recipe.steps[].name - Name of the step
- * @param {Array<Object>} recipe.steps[].ops - Operations to perform in the step
- * @param {Object} recipe.steps[].ops[].select - Element selector configuration
- * @param {Object} recipe.steps[].ops[].action - Action to perform
- * @param {boolean} [recipe.steps[].ops[].required=true] - Whether operation is required
+ * @param {Array<Object>} recipe.tasks - Array of tasks to execute
+ * @param {string} recipe.tasks[].name - Name of the task
+ * @param {Array<Object>} recipe.tasks[].ops - Operations to perform in the task
+ * @param {Object} recipe.tasks[].ops[].select - Element selector configuration
+ * @param {Object} recipe.tasks[].ops[].action - Action to perform
+ * @param {boolean} [recipe.tasks[].ops[].required=true] - Whether operation is required
  * @param {boolean} [debug=false] - Whether to enable debug logging
  * @returns {Promise<void>}
  * @throws {Error} If recipe execution fails
@@ -47,7 +47,7 @@ const { action, select } = require('./utils/helper.js');
  * const recipe = {
  *   url: "https://example.com",
  *   name: "Login Test",
- *   steps: [{
+ *   tasks: [{
  *     name: "Login",
  *     ops: [{
  *       select: "#username",
@@ -95,19 +95,19 @@ async function main(conf, recipe, verbose = false, plugins = null) {
   // Navigate to the target URL
   await page.goto(recipe.url, { waitUntil: 'networkidle0' });
 
-  // Execute recipe steps
-  for (const step of recipe.steps) {
+  // Execute recipe tasks
+  for (const task of recipe.tasks) {
     if (verbose)
-      console.log(step.name);
-    // Skip steps with no operations
-    if (!step.ops || step.ops.length === 0) {
+      console.log(task.name);
+    // Skip tasks with no operations
+    if (!task.ops || task.ops.length === 0) {
       if (verbose)
-        console.log('No operations to perform for this step.');
+        console.log('No operations to perform for this task.');
       continue;
     }
     
-    // Execute each operation in the step
-    for (const op of step.ops) {
+    // Execute each operation in the task
+    for (const op of task.ops) {
       // Create a masked version of the operation for logging
       if (verbose) {
         const maskedOp = {...op};

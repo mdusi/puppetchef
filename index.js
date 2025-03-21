@@ -76,7 +76,7 @@ function parseJsonFile(filePath) {
  * 
  * @example
  * const recipe = parseYamlFile('login.yaml');
- * // Returns: { url: "https://example.com", steps: [...] }
+ * // Returns: { url: "https://example.com", tasks: [...] }
  */
 function parseYamlFile(filePath) {
   try {
