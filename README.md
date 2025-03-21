@@ -4,7 +4,7 @@ A powerful web automation tool that uses Puppeteer to execute web automation rec
 
 ## Features
 
-- **YAML-based Recipe Definition**: Write your web automation steps in a simple, readable YAML format
+- **YAML-based Recipe Definition**: Write your web automation tasks in a simple, readable YAML format
 - **Schema Validation**: Built-in validation for recipe structure and operations
 - **Plugin System**: Extend functionality with custom plugins
 - **Configuration Management**: Flexible configuration through JSON files
@@ -66,7 +66,7 @@ Create a JSON configuration file to customize browser behavior:
 ```yaml
 url: "https://example.com"
 name: "Login Test"
-steps:
+tasks:
   - name: "Login"
     ops:
       - select: "#username"
@@ -88,7 +88,7 @@ steps:
 You can use variables in your recipes:
 
 ```yaml
-steps:
+tasks:
   - name: "Fill Form"
     ops:
       - select: "#username"
@@ -116,7 +116,7 @@ module.exports = {
 Use plugins in your recipe:
 
 ```yaml
-steps:
+tasks:
   - name: "Custom Action"
     ops:
       - select: "#target"
