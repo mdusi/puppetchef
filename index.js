@@ -34,7 +34,7 @@ program
   .description('Puppetchef CLI')
   .option('-c, --conf <file>', 'config file', 'puppetchefrc')
   .option('-v, --verbose', 'enable verbose logging', false)
-  .option('-n, --dry-run', 'validate recipe only', false)
+  .option('--syntax-check', 'validate recipe only', false)
   .option('-e, --extra <file>', 'plugins file')
   .argument('<recipe>', 'recipe file (yaml format)')
   .parse(process.argv);
@@ -45,7 +45,7 @@ const [recipeFile] = program.args;
 const verbose = options.verbose;
 const configFile = options.conf;
 const pluginsFile = options.extra;
-const dryRun = options.dryRun;
+const syntaxCheck = options.syntaxCheck;
 /**
  * Parses a JSON configuration file
  * 
@@ -95,7 +95,7 @@ const recipe = parseRecipeWithSchema(parseYamlFile(recipeFile), verbose);
 // Import plugins from the specified file
 const plugins = pluginsFile ? require(path.resolve(process.cwd(), pluginsFile)) : null;
 
-if (dryRun)
+if (syntaxCheck)
   process.exit(0);
 
 // Execute the recipe
