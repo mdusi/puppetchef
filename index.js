@@ -26,24 +26,24 @@ const program = new Command();
  * Available options:
  * - -c, --conf <file>    : Configuration file path (default: puppetchefrc)
  * - -v, --verbose       : Enable verbose logging (default: false)
- * - -i, --recipe <file> : Recipe file path in YAML format (required)
+ * - <recipe>            : Recipe file path in YAML format (required)
  */
 program
   .name('puppetchef')
-  .version('1.0.0')
+  .version('2.0.0')
   .description('Puppetchef CLI')
   .option('-c, --conf <file>', 'config file', 'puppetchefrc')
   .option('-v, --verbose', 'enable verbose logging', false)
   .option('-n, --dry-run', 'validate recipe only', false)
   .option('-e, --extra <file>', 'plugins file')
-  .requiredOption('-i, --recipe <file>', 'recipe file (yaml format)')
+  .argument('<recipe>', 'recipe file (yaml format)')
   .parse(process.argv);
 
 const options = program.opts();
+const [recipeFile] = program.args;
 
 const verbose = options.verbose;
 const configFile = options.conf;
-const recipeFile = options.recipe;
 const pluginsFile = options.extra;
 const dryRun = options.dryRun;
 /**
