@@ -83,12 +83,12 @@ const opSchema = {
 };
 
 /**
- * Schema for defining steps in a recipe
- * Each step has a name and a list of operations to perform
+ * Schema for defining tasks in a recipe
+ * Each task has a name and a list of operations to perform
  * @type {Object}
  */
-const stepSchema = {
-  $id: 'stepSchema',
+const taskSchema = {
+  $id: 'taskSchema',
   type: 'object',
   properties: {
     name: { type: 'string' },
@@ -103,7 +103,7 @@ const stepSchema = {
 
 /**
  * Schema for the complete recipe
- * Contains the target URL, recipe name, and list of steps
+ * Contains the target URL, recipe name, and list of tasks
  * @type {Object}
  */
 const recipeSchema = {
@@ -111,12 +111,12 @@ const recipeSchema = {
   properties: {
     url: { type: 'string' },
     name: { type: 'string'},
-    steps: {
+    tasks: {
       type: 'array',
-      items: stepSchema
+      items: taskSchema
     }
   },
-  required: ['url', 'name', 'steps']
+  required: ['url', 'name', 'tasks']
 };
 
 /**
@@ -153,7 +153,7 @@ ajv.addKeyword({
 ajv.addSchema(selectSchema);
 ajv.addSchema(actionSchema);
 ajv.addSchema(opSchema);
-ajv.addSchema(stepSchema);
+ajv.addSchema(taskSchema);
 
 // Create a validator function
 const validateRecipe = ajv.compile(recipeSchema);
@@ -167,12 +167,12 @@ const validateRecipe = ajv.compile(recipeSchema);
  * @param {Object} recipe - The recipe to validate and transform
  * @param {string} recipe.url - The target URL to navigate to
  * @param {string} recipe.name - The name of the recipe
- * @param {Array<Object>} recipe.steps - Array of steps to execute
- * @param {string} recipe.steps[].name - Name of the step
- * @param {Array<Object>} recipe.steps[].ops - Operations to perform
- * @param {Object} recipe.steps[].ops[].select - Element selector configuration
- * @param {Object} recipe.steps[].ops[].action - Action to perform
- * @param {boolean} [recipe.steps[].ops[].required=true] - Whether the operation is required
+ * @param {Array<Object>} recipe.tasks - Array of tasks to execute
+ * @param {string} recipe.tasks[].name - Name of the task
+ * @param {Array<Object>} recipe.tasks[].ops - Operations to perform
+ * @param {Object} recipe.tasks[].ops[].select - Element selector configuration
+ * @param {Object} recipe.tasks[].ops[].action - Action to perform
+ * @param {boolean} [recipe.tasks[].ops[].required=true] - Whether the operation is required
  * @param {boolean} [debug=false] - Whether to enable debug logging
  * @returns {Object} The validated and transformed recipe
  * @throws {Error} If the recipe format is invalid
@@ -182,7 +182,7 @@ const validateRecipe = ajv.compile(recipeSchema);
  * const recipe = {
  *   url: "https://example.com",
  *   name: "Test Recipe",
- *   steps: [{
+ *   tasks: [{
  *     name: "Click Button",
  *     ops: [{
  *       select: "#submit",
@@ -195,17 +195,21 @@ const validateRecipe = ajv.compile(recipeSchema);
  * const recipe = {
  *   url: "https://example.com",
  *   name: "Test Recipe",
- *   steps: [{
+ *   tasks: [{
  *     name: "Fill Form",
  *     ops: [{
  *       select: {
  *         type: "element",
  *         element: "#username",
- *         value: ""
+ *         data: {
+ *           timeout: 30000
+ *         }
  *       },
  *       action: {
  *         type: "fill_out",
- *         value: "testuser"
+ *         data: {
+ *           text: "testuser"
+ *         }
  *       }
  *     }]
  *   }]
