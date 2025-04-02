@@ -15,7 +15,8 @@
 
 const puppeteer = require('puppeteer-extra')
 
-const { action, select } = require('./utils/helper.js');
+// const { action, select } = require('./utils/helper.js');
+const { stepReservedKeys } = require('./utils/recipe.js');
 
 
 /**
@@ -34,10 +35,10 @@ const { action, select } = require('./utils/helper.js');
  * @param {string} recipe.name - The name of the recipe
  * @param {Array<Object>} recipe.tasks - Array of tasks to execute
  * @param {string} recipe.tasks[].name - Name of the task
- * @param {Array<Object>} recipe.tasks[].ops - Operations to perform in the task
- * @param {Object} recipe.tasks[].ops[].select - Element selector configuration
- * @param {Object} recipe.tasks[].ops[].action - Action to perform
- * @param {boolean} [recipe.tasks[].ops[].required=true] - Whether operation is required
+ * @param {Array<Object>} recipe.tasks[].steps - Steps to perform in the task
+ * @param {Object} recipe.tasks[].steps[].select - Element selector configuration
+ * @param {Object} recipe.tasks[].steps[].action - Action to perform
+ * @param {boolean} [recipe.tasks[].steps[].required=true] - Whether step is required
  * @param {boolean} [debug=false] - Whether to enable debug logging
  * @returns {Promise<void>}
  * @throws {Error} If recipe execution fails
@@ -49,7 +50,7 @@ const { action, select } = require('./utils/helper.js');
  *   name: "Login Test",
  *   tasks: [{
  *     name: "Login",
- *     ops: [{
+ *     steps: [{
  *       select: "#username",
  *       action: { type: "fill_out", value: "testuser" }
  *     }, {
@@ -99,35 +100,47 @@ async function main(conf, recipe, verbose = false, plugins = null) {
   for (const task of recipe.tasks) {
     if (verbose)
       console.log(task.name);
-    // Skip tasks with no operations
-    if (!task.ops || task.ops.length === 0) {
+    // Skip tasks with no steps
+    if (!task.steps || task.steps.length === 0) {
       if (verbose)
-        console.log('No operations to perform for this task.');
+        console.log('No steps to perform for this task.');
       continue;
     }
     
-    // Execute each operation in the task
-    for (const op of task.ops) {
-      // Create a masked version of the operation for logging
-      if (verbose) {
-        const maskedOp = {...op};
-        if ('value' in op)
-          maskedOp.value = '*'.repeat(8);
-        console.log(maskedOp);
-      }
-      
+    // Execute each steps in the task
+    for (const step of task.steps) {
+      if (verbose)
+        console.log(step);
+
+      // Extract keys from the step object that are not in the reserved keys
+      const nonReservedKeys = Object.keys(step).filter(key => !stepReservedKeys.includes(key));
+      const plugin = nonReservedKeys[0];
+
+      await plugins[plugin][plugin.split('.').pop()](page, step[plugin]);
+      //console.log('Non-reserved keys:', nonReservedKeys);
+      /*
       try {
-        // Perform element selection and action
-        const elem = await select(page, op.select, plugins);
-        await action(page, elem, op.action, plugins);
+        console.log(nonReservedKeys[0]);
       } catch (error) {
         console.log(error);
-        // If operation is not required, continue
-        if (op.required == false) 
+      }
+        */
+      
+      
+      /*
+      try {
+        // Perform element selection and action
+        const elem = await select(page, step.select, plugins);
+        await action(page, elem, step.action, plugins);
+      } catch (error) {
+        console.log(error);
+        // If step is not required, continue
+        if (step.required == false) 
           continue;
         retcode = 255;
         break;
       }
+        */
     }
 
     if (retcode > 0)

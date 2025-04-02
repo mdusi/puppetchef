@@ -150,4 +150,12 @@ async function action (page, elem, act, plugins = null) {
     }   
 }
 
-module.exports = { select, action };
+async function fill_out () {
+    console.log("FILLOUT");
+}
+
+async function click () {
+    console.log("CLICK");
+}
+
+module.exports = { select, action, fill_out, click };

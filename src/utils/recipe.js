@@ -9,6 +9,7 @@
  */
 
 const Ajv = require('ajv');
+
 const ajv = new Ajv({
   useDefaults: true,
   removeAdditional: true,
@@ -16,75 +17,44 @@ const ajv = new Ajv({
 });
 
 /**
- * Schema for defining actions in a recipe
- * Supports both string format (e.g., "click") and object format (e.g., { type: "click", value: "" })
+ * Schema for defining steps in a recipe
+ * Each step consists of a selector and an action to perform
  * @type {Object}
  */
-const actionSchema = {
-    $id: 'actionSchema',
-    toAction: true,
-    type: ["string", "object"],
-    properties: {
-        type: { type: "string" },
-        data: { type: 'object', default: {} }
-    },
-    required: ["type", "data"],
-    default: {
-        type: '',
-        data: {}
-    }
-};
-
-
-/**
- * Schema for defining element selectors in a recipe
- * Supports both string format (e.g., "#button") and object format (e.g., { type: "element", element: "#button" })
- * @type {Object}
- */
-const selectSchema = {
-    $id: 'selectSchema',
-    toSelect: true,
-    type: ["string", "object"],
-    properties: {
-        type: {
-            type: 'string',
-            default: 'element'
-        },
-        element: { type: 'string' },
-        data: {
-          type: 'object',
-          properties: {
-            timeout: { type: 'number', default: 30000 }
-          },
-          default: { timeout: 30000 },
-          required: ['timeout']
-        }
-    },
-    required: ['type', 'element', 'data']
-};
-
-/**
- * Schema for defining operations in a recipe
- * Each operation consists of a selector and an action to perform
- * @type {Object}
- */
-const opSchema = {
-  $id: 'opSchema',
+const stepSchema = {
+  $id: 'stepSchema',
   type: 'object',
   properties: {
-    select: selectSchema,
-    action: actionSchema,
-    required: {
+    // select: selectSchema,
+    // action: actionSchema,
+    register: {
+      type: 'string',
+      default: undefined
+    },
+    ignore_errors: {
       type: 'boolean',
-      default: true
+      default: false
+    },
+    when: {
+      type: 'string',
+      default: undefined
+    },
+  },
+  patternProperties: {
+    "^puppetchef.*$": { 
+      type: 'object', 
+      default: { }
     }
   },
-  required: ['select', 'action']
+  additionalProperties: false,
+  required: ['ignore_errors']
 };
+
+const stepReservedKeys = Object.keys(stepSchema.properties);
 
 /**
  * Schema for defining tasks in a recipe
- * Each task has a name and a list of operations to perform
+ * Each task has a name and a list of steps to perform
  * @type {Object}
  */
 const taskSchema = {
@@ -92,13 +62,13 @@ const taskSchema = {
   type: 'object',
   properties: {
     name: { type: 'string' },
-    ops: { 
+    steps: { 
       type: 'array', 
-      items: opSchema,
+      items: stepSchema,
       default: []
     }
   },
-  required: ['name', 'ops']
+  required: ['name', 'steps']
 };
 
 /**
@@ -150,9 +120,7 @@ ajv.addKeyword({
 );
 
 // Add schemas to ajv
-ajv.addSchema(selectSchema);
-ajv.addSchema(actionSchema);
-ajv.addSchema(opSchema);
+ajv.addSchema(stepSchema);
 ajv.addSchema(taskSchema);
 
 // Create a validator function
@@ -169,10 +137,10 @@ const validateRecipe = ajv.compile(recipeSchema);
  * @param {string} recipe.name - The name of the recipe
  * @param {Array<Object>} recipe.tasks - Array of tasks to execute
  * @param {string} recipe.tasks[].name - Name of the task
- * @param {Array<Object>} recipe.tasks[].ops - Operations to perform
- * @param {Object} recipe.tasks[].ops[].select - Element selector configuration
- * @param {Object} recipe.tasks[].ops[].action - Action to perform
- * @param {boolean} [recipe.tasks[].ops[].required=true] - Whether the operation is required
+ * @param {Array<Object>} recipe.tasks[].steps - Steps to perform
+ * @param {Object} recipe.tasks[].steps[].select - Element selector configuration
+ * @param {Object} recipe.tasks[].steps[].action - Action to perform
+ * @param {boolean} [recipe.tasks[].steps[].required=true] - Whether the step is required
  * @param {boolean} [debug=false] - Whether to enable debug logging
  * @returns {Object} The validated and transformed recipe
  * @throws {Error} If the recipe format is invalid
@@ -184,7 +152,7 @@ const validateRecipe = ajv.compile(recipeSchema);
  *   name: "Test Recipe",
  *   tasks: [{
  *     name: "Click Button",
- *     ops: [{
+ *     steps: [{
  *       select: "#submit",
  *       action: "click"
  *     }]
@@ -197,7 +165,7 @@ const validateRecipe = ajv.compile(recipeSchema);
  *   name: "Test Recipe",
  *   tasks: [{
  *     name: "Fill Form",
- *     ops: [{
+ *     steps: [{
  *       select: {
  *         type: "element",
  *         element: "#username",
@@ -234,4 +202,4 @@ function parseRecipeWithSchema(recipe, debug = false) {
   return recipe;
 }
 
-module.exports = { parseRecipeWithSchema };
+module.exports = { parseRecipeWithSchema, stepReservedKeys };
