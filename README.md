@@ -103,6 +103,7 @@ tasks:
     steps:
       - puppetchef.plugins:
           command: "customAction"
+          selector: "#username"
 ```
 
 ## Development
