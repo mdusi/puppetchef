@@ -15,7 +15,6 @@
 
 const puppeteer = require('puppeteer-extra')
 
-// const { action, select } = require('./utils/helper.js');
 const { stepReservedKeys } = require('./utils/recipe.js');
 
 
@@ -116,31 +115,17 @@ async function main(conf, recipe, verbose = false, plugins = null) {
       const nonReservedKeys = Object.keys(step).filter(key => !stepReservedKeys.includes(key));
       const plugin = nonReservedKeys[0];
 
-      await plugins[plugin][plugin.split('.').pop()](page, step[plugin]);
-      //console.log('Non-reserved keys:', nonReservedKeys);
-      /*
       try {
-        console.log(nonReservedKeys[0]);
+        await plugins[plugin][plugin.split('.').pop()](page, step[plugin]);
       } catch (error) {
-        console.log(error);
-      }
-        */
-      
-      
-      /*
-      try {
-        // Perform element selection and action
-        const elem = await select(page, step.select, plugins);
-        await action(page, elem, step.action, plugins);
-      } catch (error) {
-        console.log(error);
-        // If step is not required, continue
-        if (step.required == false) 
+        if (step.ignore_errors == true) {
+          console.log(`Ignoring error: ${error}`);
           continue;
+        }
+        console.log(`Error executing plugin ${plugin}: ${error}`);
         retcode = 255;
         break;
       }
-        */
     }
 
     if (retcode > 0)
