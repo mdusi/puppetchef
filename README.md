@@ -4,12 +4,13 @@ A powerful web automation tool that uses Puppeteer to execute web automation rec
 
 ## Features
 
-- **YAML-based Recipe Definition**: Write your web automation tasks in a simple, readable YAML format
-- **Schema Validation**: Built-in validation for recipe structure and operations
-- **Plugin System**: Extend functionality with custom plugins
-- **Configuration Management**: Flexible configuration through JSON files
-- **Verbose Logging**: Detailed execution logs for debugging
-- **Dry Run Mode**: Validate recipes without executing them
+- **YAML-based Recipe Definition**: Write your web automation tasks in a simple, readable YAML format.
+- **Schema Validation**: Built-in validation for recipe structure and operations.
+- **Plugin System**: Extend functionality with custom plugins.
+- **Configuration Management**: Flexible configuration through JSON files.
+- **Verbose Logging**: Detailed execution logs for debugging.
+- **Syntax Check Mode**: Validate recipes without executing them.
+- **Common Plugins and Commands**: Built-in plugins and commands for easier automation.
 
 ## Installation
 
@@ -20,31 +21,27 @@ npm install puppetchef
 ## Usage
 
 ```bash
-puppetchef -i recipe.yaml [options]
+puppetchef <recipe> [options]
 ```
 
 ### Command Line Options
 
-- `-i, --recipe <file>`: Recipe file in YAML format (required)
-- `-c, --conf <file>`: Configuration file (default: puppetchefrc)
-- `-v, --verbose`: Enable verbose logging (default: false)
-- `-n, --dry-run`: Validate recipe only, don't execute (default: false)
-- `-e, --extra <file>`: Path to plugins file
+- `<recipe>`: Recipe file in YAML format (required).
+- `-c, --conf <file>`: Configuration file (default: `puppetchefrc`).
+- `-v, --verbose`: Enable verbose logging (default: `false`).
+- `--syntax-check`: Validate recipe only, without executing (default: `false`).
 
 ### Examples
 
 ```bash
 # Basic usage with a recipe file
-puppetchef -i recipe.yaml
+puppetchef recipe.yaml
 
 # With configuration file and verbose logging
-puppetchef -i recipe.yaml -c config.json -v
+puppetchef recipe.yaml -c config.json -v
 
 # Validate recipe without executing
-puppetchef -i recipe.yaml -n
-
-# With custom plugins
-puppetchef -i recipe.yaml -e plugins.js
+puppetchef recipe.yaml --syntax-check
 ```
 
 ### Configuration File (puppetchefrc)
@@ -53,10 +50,12 @@ Create a JSON configuration file to customize browser behavior:
 
 ```json
 {
-  "headless": false,
-  "defaultViewport": {
-    "width": 1920,
-    "height": 1080
+  "browser": {
+    "headless": false,
+    "defaultViewport": {
+      "width": 1920,
+      "height": 1080
+    }
   }
 }
 ```
@@ -68,35 +67,18 @@ url: "https://example.com"
 name: "Login Test"
 tasks:
   - name: "Login"
-    ops:
-      - select: "#username"
-        action: 
-          type: "fill_out"
-          data:
-            text: "testuser"
-      - select: "#password"
-        action: 
-          type: "fill_out"
-          data:
-            text: "password123"
-      - select: "#submit"
-        action: "click"
-```
-
-### Variables in Recipes
-
-You can use variables in your recipes:
-
-```yaml
-tasks:
-  - name: "Fill Form"
-    ops:
-      - select: "#username"
-        action: 
-          type: "fill_out"
-          data:
-            name: John
-            age: 30
+    steps:
+      - puppetchef.builtin.common:
+          command: "fill_out"
+          selector: "#username"
+          data: "testuser"
+      - puppetchef.builtin.common:
+          command: "fill_out"
+          selector: "#password"
+          data: "password123"
+      - puppetchef.builtin.common:
+          command: "click"
+          selector: "#submit"
 ```
 
 ### Plugins
@@ -106,9 +88,9 @@ Create custom plugins to extend functionality:
 ```javascript
 // plugins.js
 module.exports = {
-  customAction: async (page, element, params) => {
+  customAction: async (page, data = {}) => {
     // Custom automation logic
-    await element.evaluate((el) => el.style.display = 'none');
+    await page.locator(data.selector);
   }
 };
 ```
@@ -118,10 +100,9 @@ Use plugins in your recipe:
 ```yaml
 tasks:
   - name: "Custom Action"
-    ops:
-      - select: "#target"
-        action: 
-          type: "customAction"
+    steps:
+      - puppetchef.plugins:
+          command: "customAction"
 ```
 
 ## Development
@@ -133,8 +114,9 @@ puppetchef/
 ├── src/
 │   ├── index.js           # Main automation logic
 │   └── utils/
-│       ├── helper.js      # Helper functions
 │       └── recipe.js      # Recipe parsing and validation
+├── plugins/
+│   ├── common.js          # Utility functions
 ├── index.js              # CLI entry point
 └── package.json
 ```
