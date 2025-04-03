@@ -42,8 +42,11 @@ const stepSchema = {
   },
   patternProperties: {
     "^puppetchef.*$": { 
-      type: 'object', 
-      default: { }
+      type: 'object',
+      properties: {
+        command: { type: 'string' }
+      },
+      required: ['command']
     }
   },
   additionalProperties: false,

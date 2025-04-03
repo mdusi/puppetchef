@@ -116,7 +116,7 @@ async function main(conf, recipe, verbose = false, plugins = null) {
       const plugin = nonReservedKeys[0];
 
       try {
-        await plugins[plugin][plugin.split('.').pop()](page, step[plugin]);
+        await plugins[plugin][step[plugin].command](page, step[plugin]);
       } catch (error) {
         if (step.ignore_errors == true) {
           console.log(`Ignoring error: ${error}`);
