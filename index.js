@@ -17,25 +17,30 @@ const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
 const { main } = require('./src/index.js');
-const { parseRecipeWithSchema } = require('./src/utils/recipe.js');
+const { parseRecipeWithSchema, stepReservedKeys } = require('./src/utils/recipe.js');
 const program = new Command();
 
 /**
  * Command line interface configuration
  * 
- * Available options:
- * - -c, --conf <file>    : Configuration file path (default: puppetchefrc)
- * - -v, --verbose       : Enable verbose logging (default: false)
- * - <recipe>            : Recipe file path in YAML format (required)
+ * Arguments:
+ *   recipe             recipe file (yaml format)
+
+ * Options:
+ *   -V, --version      output the version number
+ *   -c, --conf <file>  config file (default: "puppetchefrc")
+ *   -v, --verbose      enable verbose logging (default: false)
+ *   --syntax-check     validate recipe only (default: false)
+ *   -h, --help         display help for command
+ *
  */
 program
   .name('puppetchef')
-  .version('2.0.0')
+  .version('3.0.0')
   .description('Puppetchef CLI')
   .option('-c, --conf <file>', 'config file', 'puppetchefrc')
   .option('-v, --verbose', 'enable verbose logging', false)
-  .option('-n, --dry-run', 'validate recipe only', false)
-  .option('-e, --extra <file>', 'plugins file')
+  .option('--syntax-check', 'validate recipe only', false)
   .argument('<recipe>', 'recipe file (yaml format)')
   .parse(process.argv);
 
@@ -44,8 +49,7 @@ const [recipeFile] = program.args;
 
 const verbose = options.verbose;
 const configFile = options.conf;
-const pluginsFile = options.extra;
-const dryRun = options.dryRun;
+const syntaxCheck = options.syntaxCheck;
 /**
  * Parses a JSON configuration file
  * 
@@ -76,7 +80,7 @@ function parseJsonFile(filePath) {
  * 
  * @example
  * const recipe = parseYamlFile('login.yaml');
- * // Returns: { url: "https://example.com", steps: [...] }
+ * // Returns: { url: "https://example.com", tasks: [...] }
  */
 function parseYamlFile(filePath) {
   try {
@@ -92,11 +96,24 @@ function parseYamlFile(filePath) {
 const config = parseJsonFile(configFile);
 const recipe = parseRecipeWithSchema(parseYamlFile(recipeFile), verbose);
 
-// Import plugins from the specified file
-const plugins = pluginsFile ? require(path.resolve(process.cwd(), pluginsFile)) : null;
+const allSteps = recipe.tasks.flatMap(task => task.steps.flat());
+const pluginNames = [...new Set(allSteps.map(
+  s => Object.keys(s).filter(key => !stepReservedKeys.includes(key))
+).flat())];
+console.log('Plugins needed:', pluginNames);
 
-if (dryRun)
+// Create a JSON object from an array of plugin names
+const plugins = pluginNames.reduce((obj, plugin) => {
+  const pluginsFile = plugin.startsWith('puppetchef.builtin') ? plugin.split('.').pop() : null;
+  console.log(`Loading plugin: ${plugin} from ${pluginsFile}`);
+  obj[plugin] = pluginsFile ? require(path.resolve(process.cwd(), "plugins", pluginsFile)) : null;
+  return obj;
+}, {});
+
+if (syntaxCheck)
   process.exit(0);
+
+console.log(plugins);
 
 // Execute the recipe
 main(config, recipe, verbose, plugins);

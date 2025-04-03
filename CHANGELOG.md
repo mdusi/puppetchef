@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2025-04-02
+
+### Added
+- **Common Plugins**: Added built-in common plugins and the ability to refer to them with commands.
+- **Common Commands**: Introduced common commands for easier automation.
+- **Syntax Check**: Replaced `dry-run` mode with `syntax-check` for validating recipes.
+
+### Changed
+- **Schema Update**: Moved to an Ansible-like schema for better structure and flexibility.
+- **Tasks Over Steps**: Replaced `steps` with `tasks` in the recipe schema for improved clarity and functionality.
+
+### Removed
+- **Helper Module**: Removed the `helper` module as part of the refactoring.
+
+### Documentation
+- Updated documentation to reflect the new schema and task-based structure.
+- Cleaned up and improved inline documentation for recipes and commands.
+
 ## [2.0.0] - 2025-03-20
 
 ### Added
@@ -43,5 +61,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Wait, polling, and element handling functionality
 - Error handling for required operations
 
+[3.0.0]: https://github.com/edi/puppetchef/releases/tag/v3.0.0
 [2.0.0]: https://github.com/edi/puppetchef/releases/tag/v2.0.0
-[1.0.0]: https://github.com/edi/puppetchef/releases/tag/v1.0.0 
+[1.0.0]: https://github.com/edi/puppetchef/releases/tag/v1.0.0
