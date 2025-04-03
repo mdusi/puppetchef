@@ -118,7 +118,7 @@ puppetchef/
 │       └── recipe.js      # Recipe parsing and validation
 ├── plugins/
 │   ├── common.js          # Utility functions
-├── index.js              # CLI entry point
+├── index.js               # CLI entry point
 └── package.json
 ```
 
