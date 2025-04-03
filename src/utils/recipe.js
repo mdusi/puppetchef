@@ -2,8 +2,8 @@
  * Recipe validation and transformation module
  * 
  * This module provides functionality to validate and transform web automation recipes
- * using JSON Schema validation (via Ajv). It handles both simple string formats and
- * expanded object formats for actions and selectors.
+ * using JSON Schema validation (via Ajv). It ensures that recipes conform to a predefined
+ * schema and handles transformations of simple formats into expanded object formats.
  * 
  * @module recipe
  */
@@ -18,15 +18,13 @@ const ajv = new Ajv({
 
 /**
  * Schema for defining steps in a recipe
- * Each step consists of a selector and an action to perform
+ * Each step consists of a command to perform
  * @type {Object}
  */
 const stepSchema = {
   $id: 'stepSchema',
   type: 'object',
   properties: {
-    // select: selectSchema,
-    // action: actionSchema,
     register: {
       type: 'string',
       default: undefined
@@ -92,36 +90,6 @@ const recipeSchema = {
   required: ['url', 'name', 'tasks']
 };
 
-/**
- * Custom keyword for transforming string actions into object format
- * Example: "click" -> { type: "click", value: "" }
- */
-ajv.addKeyword({
-    keyword: "toAction",
-    type: "string",
-    compile: () => (data, dataPath) => {
-      if (typeof data === "string")
-        dataPath.parentData[dataPath.parentDataProperty] = { type: data, value: "" };
-      return true;
-    }
-  }
-);
-
-/**
- * Custom keyword for transforming string selectors into object format
- * Example: "#button" -> { type: "element", element: "#button", value: "" }
- */
-ajv.addKeyword({
-    keyword: "toSelect",
-    type: "string",
-    compile: () => (data, dataPath) => {
-      if (typeof data === "string")
-        dataPath.parentData[dataPath.parentDataProperty] = { type: "element", element: data, data: { timeout: 30000 } };
-      return true;
-    }
-  }
-);
-
 // Add schemas to ajv
 ajv.addSchema(stepSchema);
 ajv.addSchema(taskSchema);
@@ -149,39 +117,18 @@ const validateRecipe = ajv.compile(recipeSchema);
  * @throws {Error} If the recipe format is invalid
  * 
  * @example
- * // Simple format
+ * // Basic recipe example
  * const recipe = {
  *   url: "https://example.com",
  *   name: "Test Recipe",
  *   tasks: [{
  *     name: "Click Button",
  *     steps: [{
- *       select: "#submit",
- *       action: "click"
- *     }]
- *   }]
- * };
- * 
- * // Expanded format
- * const recipe = {
- *   url: "https://example.com",
- *   name: "Test Recipe",
- *   tasks: [{
- *     name: "Fill Form",
- *     steps: [{
- *       select: {
- *         type: "element",
- *         element: "#username",
- *         data: {
- *           timeout: 30000
- *         }
+ *       puppetchef.builtin.common: {
+ *         command: click,
+ *         selector: '#button'
  *       },
- *       action: {
- *         type: "fill_out",
- *         data: {
- *           text: "testuser"
- *         }
- *       }
+ *       ignore_errors: true
  *     }]
  *   }]
  * };
