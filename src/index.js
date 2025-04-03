@@ -35,48 +35,8 @@ const { stepReservedKeys } = require('./utils/recipe.js');
  * @param {Array<Object>} recipe.tasks - Array of tasks to execute
  * @param {string} recipe.tasks[].name - Name of the task
  * @param {Array<Object>} recipe.tasks[].steps - Steps to perform in the task
- * @param {Object} recipe.tasks[].steps[].select - Element selector configuration
- * @param {Object} recipe.tasks[].steps[].action - Action to perform
- * @param {boolean} [recipe.tasks[].steps[].required=true] - Whether step is required
- * @param {boolean} [debug=false] - Whether to enable debug logging
  * @returns {Promise<void>}
  * @throws {Error} If recipe execution fails
- * 
- * @example
- * // Basic recipe example
- * const recipe = {
- *   url: "https://example.com",
- *   name: "Login Test",
- *   tasks: [{
- *     name: "Login",
- *     steps: [{
- *       select: "#username",
- *       action: { type: "fill_out", value: "testuser" }
- *     }, {
- *       select: "#password",
- *       action: { type: "fill_out", value: "password123" }
- *     }, {
- *       select: "#submit",
- *       action: "click"
- *     }]
- *   }]
- * };
- * 
- * // Configuration example
- * const conf = {
- *   browser: {
- *     headless: false,
- *     defaultViewport: { width: 1920, height: 1080 }
- *   }
- * };
- * 
- * // Execute the recipe
- * try {
- *   await main(conf, recipe, true);
- * } catch (error) {
- *   console.error('Recipe execution failed:', error);
- *   process.exit(1);
- * }
  */
 async function main(conf, recipe, verbose = false, plugins = null) {
   if (verbose) {

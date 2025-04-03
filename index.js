@@ -23,10 +23,16 @@ const program = new Command();
 /**
  * Command line interface configuration
  * 
- * Available options:
- * - -c, --conf <file>    : Configuration file path (default: puppetchefrc)
- * - -v, --verbose       : Enable verbose logging (default: false)
- * - <recipe>            : Recipe file path in YAML format (required)
+ * Arguments:
+ *   recipe             recipe file (yaml format)
+
+ * Options:
+ *   -V, --version      output the version number
+ *   -c, --conf <file>  config file (default: "puppetchefrc")
+ *   -v, --verbose      enable verbose logging (default: false)
+ *   --syntax-check     validate recipe only (default: false)
+ *   -h, --help         display help for command
+ *
  */
 program
   .name('puppetchef')
