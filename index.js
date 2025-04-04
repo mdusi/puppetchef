@@ -36,7 +36,7 @@ const program = new Command();
  */
 program
   .name('puppetchef')
-  .version('3.0.0')
+  .version('3.1.0')
   .description('Puppetchef CLI')
   .option('-c, --conf <file>', 'config file', 'puppetchefrc')
   .option('-v, --verbose', 'enable verbose logging', false)
