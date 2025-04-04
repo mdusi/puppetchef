@@ -53,8 +53,8 @@ async function main(conf, recipe, verbose = false, plugins = null) {
   let variables = {};
   const regex = /(?<!\S)(\w+)/g;
   const fn = (match) => match in variables ? `variables['${match}']` : match;
-  const regexp2 = /{{\s*(\w+.*?)\s*}}/g;
-  const processEntry = (value) => regexp2.test(value) ? eval(value.replace(regexp2, `variables.$1`)) : value;
+  const regex2 = /{{\s*(\w+.*?)\s*}}/g;
+  const processEntry = (value) => regex2.test(value) ? eval(value.replace(regex2, `variables.$1`)) : value;
 
   // Execute recipe tasks
   for (const task of recipe.tasks) {

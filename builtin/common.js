@@ -30,5 +30,10 @@ module.exports = {
             { polling: 1000 },  // Poll every second for better logging visibility
             data
         );
+    },
+
+    debug: async (page, data = {}) => {
+        const formattedMsg = data.format ? data.format.replace('%s', data.data) : data.data;
+        console.log(formattedMsg);
     }
 }
