@@ -86,24 +86,37 @@ tasks:
 Create custom plugins to extend functionality:
 
 ```javascript
-// plugins.js
+// plugin.js
 module.exports = {
   customAction: async (page, data = {}) => {
     // Custom automation logic
     await page.locator(data.selector);
+
+    // If you need to return values for later use
+    return { x: 20, y: "msg"};
   }
 };
 ```
 
-Use plugins in your recipe:
+Use plugins in your recipe (plugin below is expected in ./plugins/plugin.js):
 
 ```yaml
+name: Example Recipe
+url: https://example.com/demo-url
 tasks:
   - name: "Custom Action"
     steps:
-      - puppetchef.plugins:
+      - puppetchef.plugins.plugin:
           command: "customAction"
           selector: "#username"
+        # Make the return value of customAction available to the following steps
+        register: ret
+      - puppetchef.builtin.common:
+          command: debug
+          data: "{{ ret.y }}"
+          format: "Debugging: %s"
+        # Conditionals for when to execute this step
+        when: ret.x > 0
 ```
 
 ## Development
@@ -113,12 +126,11 @@ tasks:
 ```
 puppetchef/
 ├── src/
-│   ├── index.js           # Main automation logic
-│   └── utils/
-│       └── recipe.js      # Recipe parsing and validation
-├── plugins/
-│   ├── common.js          # Utility functions
-├── index.js               # CLI entry point
+│   ├── index.js    # Main automation logic
+│   └── recipe.js   # Recipe parsing and validation
+├── builtin/
+│   ├── common.js   # Utility functions
+├── index.js        # CLI entry point
 └── package.json
 ```
 

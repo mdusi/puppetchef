@@ -15,7 +15,7 @@
 
 const puppeteer = require('puppeteer-extra')
 
-const { stepReservedKeys } = require('./utils/recipe.js');
+const { stepReservedKeys } = require('./recipe.js');
 
 
 /**
@@ -39,11 +39,6 @@ const { stepReservedKeys } = require('./utils/recipe.js');
  * @throws {Error} If recipe execution fails
  */
 async function main(conf, recipe, verbose = false, plugins = null) {
-  if (verbose) {
-    console.log(`Config file: ${conf}`);
-    console.log(`Following recipe: ${recipe}`);
-  }
-
   // Initialize browser with provided configuration
   const browser = await puppeteer.launch({
       ...(conf || {}),
@@ -54,6 +49,12 @@ async function main(conf, recipe, verbose = false, plugins = null) {
 
   // Navigate to the target URL
   await page.goto(recipe.url, { waitUntil: 'networkidle0' });
+
+  let variables = {};
+  const regex = /(?<!\S)(\w+)/g;
+  const fn = (match) => match in variables ? `variables['${match}']` : match;
+  const regex2 = /{{\s*(\w+.*?)\s*}}/g;
+  const processEntry = (value) => regex2.test(value) ? eval(value.replace(regex2, `variables.$1`)) : value;
 
   // Execute recipe tasks
   for (const task of recipe.tasks) {
@@ -76,7 +77,28 @@ async function main(conf, recipe, verbose = false, plugins = null) {
       const plugin = nonReservedKeys[0];
 
       try {
-        await plugins[plugin][step[plugin].command](page, step[plugin]);
+        if (step.when) {
+          const cond = step.when.replace(regex, fn);
+          const isConditionTrue = eval(cond);
+          if (!isConditionTrue) {
+            if (verbose)
+              console.log(`Condition not met: ${cond}`);
+            continue;
+          }
+        }
+
+        const data = Object.fromEntries(
+          Object.entries(step[plugin]).map(([k, v]) => [k, processEntry(v)])
+        );
+
+        const ret = await plugins[plugin][step[plugin].command](page, data);
+
+        if (step.register) {
+          if (verbose)
+            console.log(`Registering variable ${step.register} with value ${JSON.stringify(ret)}`);
+          variables[step.register] = ret;
+        };
+
       } catch (error) {
         if (step.ignore_errors == true) {
           console.log(`Ignoring error: ${error}`);

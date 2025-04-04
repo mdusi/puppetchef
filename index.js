@@ -17,7 +17,7 @@ const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
 const { main } = require('./src/index.js');
-const { parseRecipeWithSchema, stepReservedKeys } = require('./src/utils/recipe.js');
+const { parseRecipeWithSchema, stepReservedKeys } = require('./src/recipe.js');
 const program = new Command();
 
 /**
@@ -100,20 +100,16 @@ const allSteps = recipe.tasks.flatMap(task => task.steps.flat());
 const pluginNames = [...new Set(allSteps.map(
   s => Object.keys(s).filter(key => !stepReservedKeys.includes(key))
 ).flat())];
-console.log('Plugins needed:', pluginNames);
 
 // Create a JSON object from an array of plugin names
 const plugins = pluginNames.reduce((obj, plugin) => {
-  const pluginsFile = plugin.startsWith('puppetchef.builtin') ? plugin.split('.').pop() : null;
-  console.log(`Loading plugin: ${plugin} from ${pluginsFile}`);
-  obj[plugin] = pluginsFile ? require(path.resolve(process.cwd(), "plugins", pluginsFile)) : null;
+  const pluginPath = plugin.startsWith('puppetchef') ? plugin.split('.').slice(1) : null;
+  obj[plugin] = pluginPath ? require(path.resolve(process.cwd(), ...pluginPath)) : null;
   return obj;
 }, {});
 
 if (syntaxCheck)
   process.exit(0);
-
-console.log(plugins);
 
 // Execute the recipe
 main(config, recipe, verbose, plugins);
