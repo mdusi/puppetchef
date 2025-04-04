@@ -86,7 +86,7 @@ tasks:
 Create custom plugins to extend functionality:
 
 ```javascript
-// plugins.js
+// plugin.js
 module.exports = {
   customAction: async (page, data = {}) => {
     // Custom automation logic
@@ -95,13 +95,13 @@ module.exports = {
 };
 ```
 
-Use plugins in your recipe:
+Use plugins in your recipe (plugin below is expected in ./plugins/plugin.js):
 
 ```yaml
 tasks:
   - name: "Custom Action"
     steps:
-      - puppetchef.plugins:
+      - puppetchef.plugins.plugin:
           command: "customAction"
           selector: "#username"
 ```
@@ -113,12 +113,11 @@ tasks:
 ```
 puppetchef/
 ├── src/
-│   ├── index.js           # Main automation logic
-│   └── utils/
-│       └── recipe.js      # Recipe parsing and validation
-├── plugins/
-│   ├── common.js          # Utility functions
-├── index.js               # CLI entry point
+│   ├── index.js    # Main automation logic
+│   └── recipe.js   # Recipe parsing and validation
+├── builtin/
+│   ├── common.js   # Utility functions
+├── index.js        # CLI entry point
 └── package.json
 ```
 

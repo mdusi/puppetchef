@@ -15,7 +15,7 @@
 
 const puppeteer = require('puppeteer-extra')
 
-const { stepReservedKeys } = require('./utils/recipe.js');
+const { stepReservedKeys } = require('./recipe.js');
 
 
 /**

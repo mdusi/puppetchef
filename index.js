@@ -17,7 +17,7 @@ const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
 const { main } = require('./src/index.js');
-const { parseRecipeWithSchema, stepReservedKeys } = require('./src/utils/recipe.js');
+const { parseRecipeWithSchema, stepReservedKeys } = require('./src/recipe.js');
 const program = new Command();
 
 /**
