@@ -1,10 +1,10 @@
 # Puppetchef
 
-A powerful web automation tool that uses Puppeteer to execute web automation recipes defined in YAML format.
+A web automation tool that uses Puppeteer to execute web automation recipes defined in YAML format.
 
 ## Features
 
-- **YAML-based Recipe Definition**: Write your web automation tasks in a simple, readable YAML format.
+- **YAML-based Recipe Definition**: Write your web automation tasks in a simple, readable YAML format (syntax inspired by Ansible).
 - **Schema Validation**: Built-in validation for recipe structure and operations.
 - **Plugin System**: Extend functionality with custom plugins.
 - **Configuration Management**: Flexible configuration through JSON files.
