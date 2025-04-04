@@ -103,8 +103,8 @@ const pluginNames = [...new Set(allSteps.map(
 
 // Create a JSON object from an array of plugin names
 const plugins = pluginNames.reduce((obj, plugin) => {
-  const pluginsFile = plugin.startsWith('puppetchef') ? plugin.split('.').pop() : null;
-  obj[plugin] = pluginsFile ? require(path.resolve(process.cwd(), "plugins", pluginsFile)) : null;
+  const pluginPath = plugin.startsWith('puppetchef') ? plugin.split('.').slice(1) : null;
+  obj[plugin] = pluginPath ? require(path.resolve(process.cwd(), ...pluginPath)) : null;
   return obj;
 }, {});
 
