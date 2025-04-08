@@ -83,7 +83,7 @@ tasks:
 
 ### Plugins
 
-Create custom plugins to extend functionality:
+Create a *plugins* module with custom plugins to extend functionality:
 
 ```javascript
 // plugin.js
@@ -98,7 +98,13 @@ module.exports = {
 };
 ```
 
-Use plugins in your recipe (plugin below is expected in ./plugins/plugin.js):
+Install the *plugins* module:
+
+```bash
+npm install plugins
+```
+
+And use it in your recipe:
 
 ```yaml
 name: Example Recipe

@@ -14,9 +14,7 @@
  */
 
 const puppeteer = require('puppeteer-extra')
-
 const { stepReservedKeys } = require('./recipe.js');
-
 
 /**
  * Executes a web automation recipe using Puppeteer
