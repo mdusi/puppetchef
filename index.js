@@ -107,8 +107,8 @@ const plugins = pluginNames.reduce((obj, plugin) => {
   if (pluginPath) {
     const basePath = plugin.startsWith('puppetchef.builtin')
       ? __dirname
-      : process.env.PUPPETCHEF_CUSTOM_PLUGINS || process.cwd();
-    obj[plugin] = require(path.resolve(basePath, ...pluginPath));
+      : '';
+    obj[plugin] = require(path.join(basePath, ...pluginPath));
   }
   return obj;
 }, {});
