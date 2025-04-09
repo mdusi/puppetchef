@@ -8,6 +8,7 @@
  * @module recipe
  */
 
+const { logger } = require('./logger.js');
 const Ajv = require('ajv');
 
 const ajv = new Ajv({
@@ -112,7 +113,6 @@ const validateRecipe = ajv.compile(recipeSchema);
  * @param {Object} recipe.tasks[].steps[].select - Element selector configuration
  * @param {Object} recipe.tasks[].steps[].action - Action to perform
  * @param {boolean} [recipe.tasks[].steps[].required=true] - Whether the step is required
- * @param {boolean} [debug=false] - Whether to enable debug logging
  * @returns {Object} The validated and transformed recipe
  * @throws {Error} If the recipe format is invalid
  * 
@@ -133,22 +133,16 @@ const validateRecipe = ajv.compile(recipeSchema);
  *   }]
  * };
  */
-function parseRecipeWithSchema(recipe, debug = false) {
-  if (debug)
-    console.log('Debug: Parsing recipe:', JSON.stringify(recipe, null, 2));
-
+function parseRecipeWithSchema(recipe) {
+  logger.debug(`Parsing recipe: ${ JSON.stringify(recipe, null, 2) }`);
   const valid = validateRecipe(recipe);
-  
   if (!valid) {
     const errors = validateRecipe.errors.map(err => 
       `${err.instancePath} ${err.message}`
     ).join('; ');
     throw new Error(`Invalid recipe format: ${errors}`);
   }
-
-  if (debug)
-    console.log('Debug: Transformed recipe:', JSON.stringify(recipe, null, 2));
-
+  logger.debug(`Executing recipe: ${ JSON.stringify(recipe, null, 2) }`);
   return recipe;
 }
 

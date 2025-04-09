@@ -1,6 +1,6 @@
 {
   "name": "puppetchef",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "A simple JavaScript project.",
   "main": "index.js",
   "bin": {
@@ -20,7 +20,8 @@
     "js-yaml": "^4.1.0",
     "puppeteer": "^24.1.1",
     "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-user-preferences": "^2.4.1"
+    "puppeteer-extra-plugin-user-preferences": "^2.4.1",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

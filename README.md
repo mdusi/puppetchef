@@ -28,8 +28,12 @@ puppetchef <recipe> [options]
 
 - `<recipe>`: Recipe file in YAML format (required).
 - `-c, --conf <file>`: Configuration file (default: `puppetchefrc`).
-- `-v, --verbose`: Enable verbose logging (default: `false`).
 - `--syntax-check`: Validate recipe only, without executing (default: `false`).
+
+### Environment Variables
+
+- `PUPPETCHEF_DEBUG`: enable debugging
+- `PUPPETCHEF_LOGFILE`: path to log file (default: ./puppetchef.log)
 
 ### Examples
 
