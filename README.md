@@ -129,27 +129,6 @@ tasks:
         when: ret.x > 0
 ```
 
-## Development
-
-### Project Structure
-
-```
-puppetchef/
-├── src/
-│   ├── index.js    # Main automation logic
-│   └── recipe.js   # Recipe parsing and validation
-├── builtin/
-│   ├── common.js   # Utility functions
-├── index.js        # CLI entry point
-└── package.json
-```
-
-### Running Tests
-
-```bash
-npm test
-```
-
 ## License
 
 MIT
