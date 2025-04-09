@@ -29,7 +29,6 @@ const program = new Command();
  * Options:
  *   -V, --version      output the version number
  *   -c, --conf <file>  config file (default: "puppetchefrc")
- *   -v, --verbose      enable verbose logging (default: false)
  *   --syntax-check     validate recipe only (default: false)
  *   -h, --help         display help for command
  *
@@ -39,7 +38,6 @@ program
   .version('3.1.0')
   .description('Puppetchef CLI')
   .option('-c, --conf <file>', 'config file', 'puppetchefrc')
-  .option('-v, --verbose', 'enable verbose logging', false)
   .option('--syntax-check', 'validate recipe only', false)
   .argument('<recipe>', 'recipe file (yaml format)')
   .parse(process.argv);
@@ -47,9 +45,9 @@ program
 const options = program.opts();
 const [recipeFile] = program.args;
 
-const verbose = options.verbose;
 const configFile = options.conf;
 const syntaxCheck = options.syntaxCheck;
+
 /**
  * Parses a JSON configuration file
  * 
@@ -94,7 +92,7 @@ function parseYamlFile(filePath) {
 
 // Parse configuration and recipe files
 const config = parseJsonFile(configFile);
-const recipe = parseRecipeWithSchema(parseYamlFile(recipeFile), verbose);
+const recipe = parseRecipeWithSchema(parseYamlFile(recipeFile));
 
 const allSteps = recipe.tasks.flatMap(task => task.steps.flat());
 const pluginNames = [...new Set(allSteps.map(
@@ -113,8 +111,6 @@ const plugins = pluginNames.reduce((obj, plugin) => {
   return obj;
 }, {});
 
-if (syntaxCheck)
-  process.exit(0);
-
 // Execute the recipe
-main(config, recipe, verbose, plugins);
+if (!syntaxCheck)
+  main(config, recipe, plugins);

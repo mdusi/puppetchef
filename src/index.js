@@ -15,6 +15,7 @@
 
 const puppeteer = require('puppeteer-extra')
 const { stepReservedKeys } = require('./recipe.js');
+const { logger } = require('./logger.js');
 
 /**
  * Executes a web automation recipe using Puppeteer
@@ -36,7 +37,7 @@ const { stepReservedKeys } = require('./recipe.js');
  * @returns {Promise<void>}
  * @throws {Error} If recipe execution fails
  */
-async function main(conf, recipe, verbose = false, plugins = null) {
+async function main(conf, recipe, plugins = null) {
   // Initialize browser with provided configuration
   const browser = await puppeteer.launch({
       ...(conf || {}),
@@ -56,19 +57,16 @@ async function main(conf, recipe, verbose = false, plugins = null) {
 
   // Execute recipe tasks
   for (const task of recipe.tasks) {
-    if (verbose)
-      console.log(task.name);
+    logger.debug(`Executing task: ${task.name}`);
     // Skip tasks with no steps
     if (!task.steps || task.steps.length === 0) {
-      if (verbose)
-        console.log('No steps to perform for this task.');
+      logger.debug('No steps to perform for this task.');
       continue;
     }
     
     // Execute each steps in the task
     for (const step of task.steps) {
-      if (verbose)
-        console.log(step);
+      logger.debug(JSON.stringify(step, null, 2));
 
       // Extract keys from the step object that are not in the reserved keys
       const nonReservedKeys = Object.keys(step).filter(key => !stepReservedKeys.includes(key));
@@ -79,8 +77,7 @@ async function main(conf, recipe, verbose = false, plugins = null) {
           const cond = step.when.replace(regex, fn);
           const isConditionTrue = eval(cond);
           if (!isConditionTrue) {
-            if (verbose)
-              console.log(`Condition not met: ${cond}`);
+            logger.debug(`Condition not met: ${cond}`);
             continue;
           }
         }
@@ -92,17 +89,16 @@ async function main(conf, recipe, verbose = false, plugins = null) {
         const ret = await plugins[plugin][step[plugin].command](page, data);
 
         if (step.register) {
-          if (verbose)
-            console.log(`Registering variable ${step.register} with value ${JSON.stringify(ret)}`);
+          logger.debug(`Registering variable ${step.register} with value ${JSON.stringify(ret)}`);
           variables[step.register] = ret;
         };
 
       } catch (error) {
         if (step.ignore_errors == true) {
-          console.log(`Ignoring error: ${error}`);
+          logger.debug(`Ignoring error: ${error}`);
           continue;
         }
-        console.log(`Error executing plugin ${plugin}: ${error}`);
+        logger.debug(`Error executing plugin ${plugin}: ${error}`);
         retcode = 255;
         break;
       }

@@ -1,3 +1,5 @@
+const { logger } = require('../src/logger.js');
+
 module.exports = {
     select: async (page, data = {}) => {
         // page.on('console', msg => console.log('Browser log:', msg.text()));
@@ -21,9 +23,9 @@ module.exports = {
     },
 
     pollingFor: async (page, data = {}) => {
+        logger.debug(`Polling for ${data.selector} to contain ${data.text}`);
         return await page.waitForFunction(
             data => {
-                console.log(`Checking selector: ${data.selector} for text: ${data.text}`);
                 const element = document.querySelector(data.selector);
                 return element ? element.innerText.includes(data.text) : false;
             },
