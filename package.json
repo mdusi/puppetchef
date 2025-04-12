@@ -1,7 +1,7 @@
 {
   "name": "puppetchef",
   "version": "3.2.1",
-  "description": "A simple JavaScript project.",
+  "description": "A tool that uses Puppeteer to execute web automation recipes defined in YAML format.",
   "main": "index.js",
   "bin": {
     "puppetchef": "index.js"
@@ -26,5 +26,19 @@
     "@eslint/js": "^9.19.0",
     "eslint": "^9.19.0",
     "globals": "^15.14.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdusi/puppetchef.git"
+  },
+  "keywords": [
+    "web",
+    "automation",
+    "puppeteer",
+    "yaml"
+  ],
+  "bugs": {
+    "url": "https://github.com/mdusi/puppetchef/issues"
+  },
+  "homepage": "https://github.com/mdusi/puppetchef#readme"
 }
