@@ -32,8 +32,9 @@ puppetchef <recipe> [options]
 
 ### Environment Variables
 
-- `PUPPETCHEF_DEBUG`: enable debugging
-- `PUPPETCHEF_LOGFILE`: path to log file (default: ./puppetchef.log)
+- `PUPPETCHEF_INFO`: Enables debugging at the INFO level.
+- `PUPPETCHEF_DEBUG`: Enables debugging at the DEBUG level.
+- `PUPPETCHEF_LOGFILE`: Path to the log file (default: stdout) when a debug level is set.
 
 ### Examples
 
