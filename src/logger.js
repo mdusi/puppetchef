@@ -11,19 +11,42 @@ const customFormat = printf(({ level, message, timestamp }) => {
  * @type {Logger}
  */
 const logger = createLogger({
-    level: 'debug',
     format: combine(timestamp(), customFormat),
     defaultMeta: { service: 'puppetchef' },
     transports: [
         new transports.File({
-            filename: process.env.PUPPETCHEF_DEBUG 
-                ? (process.env.PUPPETCHEF_LOGFILE || 'puppetchef.log') 
-                : '/dev/null',
+            filename: '/dev/null'
+        }),
+    ]
+})
+
+if (process.env.PUPPETCHEF_DEBUG == 1) {
+    const transport = process.env.PUPPETCHEF_LOGFILE
+        ? new transports.File({
+            filename: process.env.PUPPETCHEF_LOGFILE,
+            level: 'debug',
             maxsize: 1024 * 1024 * 10,
             maxFiles: 3,
-        }),
-    ],
-})
+        })
+        : new transports.Console({
+            level: 'debug',
+        })
+    logger.add(transport)
+}
+
+if (process.env.PUPPETCHEF_INFO == 1) {
+    const transport = process.env.PUPPETCHEF_LOGFILE
+        ? new transports.File({
+            filename: process.env.PUPPETCHEF_LOGFILE,
+            level: 'info',
+            maxsize: 1024 * 1024 * 10,
+            maxFiles: 3,
+        })
+        : new transports.Console({
+            level: 'info',
+        })
+    logger.add(transport)
+}
 
 module.exports = {
     logger,
