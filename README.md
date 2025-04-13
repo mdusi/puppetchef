@@ -42,8 +42,8 @@ puppetchef <recipe> [options]
 # Basic usage with a recipe file
 puppetchef recipe.yaml
 
-# With configuration file and verbose logging
-puppetchef recipe.yaml -c config.json -v
+# With configuration file
+puppetchef recipe.yaml -c config.json
 
 # Validate recipe without executing
 puppetchef recipe.yaml --syntax-check
