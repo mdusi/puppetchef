@@ -1,5 +1,3 @@
-// const { createLogger, transports } = require('winston');
-
 describe('Logger Configuration', () => {
     beforeEach(() => {
         // Clear environment variables before each test
