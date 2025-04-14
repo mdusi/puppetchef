@@ -35,7 +35,7 @@ const program = new Command();
  */
 program
   .name('puppetchef')
-  .version('3.2.1')
+  .version('3.2.2')
   .description('Puppetchef CLI')
   .option('-c, --conf <file>', 'config file', 'puppetchefrc')
   .option('--syntax-check', 'validate recipe only', false)
