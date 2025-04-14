@@ -110,7 +110,7 @@ async function main(conf, recipe, plugins = null) {
 
   // Cleanup and exit
   await browser.close()
-  process.exit(retcode)
+  return retcode;
 }
 
 module.exports = { main };
