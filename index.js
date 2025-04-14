@@ -35,7 +35,7 @@ const program = new Command();
  */
 program
   .name('puppetchef')
-  .version('3.2.2')
+  .version('3.2.3')
   .description('Puppetchef CLI')
   .option('-c, --conf <file>', 'config file', 'puppetchefrc')
   .option('--syntax-check', 'validate recipe only', false)
@@ -111,8 +111,11 @@ const plugins = pluginNames.reduce((obj, plugin) => {
   return obj;
 }, {});
 
-// Execute the recipe
-if (!syntaxCheck) {
-  const retcode = main(config, recipe, plugins);
-  process.exit(retcode);
-}
+(async () => {
+  // Execute the recipe
+  if (!syntaxCheck) {
+    await main(config, recipe, plugins).then( retcode => {
+        process.exit(retcode);
+    });
+  }
+})();
