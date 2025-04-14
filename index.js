@@ -112,5 +112,7 @@ const plugins = pluginNames.reduce((obj, plugin) => {
 }, {});
 
 // Execute the recipe
-if (!syntaxCheck)
-  main(config, recipe, plugins);
+if (!syntaxCheck) {
+  const retcode = main(config, recipe, plugins);
+  process.exit(retcode);
+}
