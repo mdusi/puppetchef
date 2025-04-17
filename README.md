@@ -55,13 +55,16 @@ Create a JSON configuration file to customize browser behavior:
 
 ```json
 {
-  "browser": {
+    "executablePath": "/usr/local/bin/chromium",
     "headless": false,
     "defaultViewport": {
-      "width": 1920,
-      "height": 1080
+        "width": 1920,
+        "height": 1080
+    },
+    "downloadBehavior": {
+        "policy": "allow",
+        "downloadPath": "/tmp"
     }
-  }
 }
 ```
 
