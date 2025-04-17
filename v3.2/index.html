@@ -605,23 +605,29 @@
 <li><code>PUPPETCHEF_LOGFILE</code>: Path to the log file (default: stdout) when a debug level is set.</li>
 </ul>
 <h2 id="configuration-file">Configuration File</h2>
-<div class="language-text no-select highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">puppetchefrc</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
-<span class="normal"><a href="#__codelineno-2-2">2</a></span>
-<span class="normal"><a href="#__codelineno-2-3">3</a></span>
-<span class="normal"><a href="#__codelineno-2-4">4</a></span>
-<span class="normal"><a href="#__codelineno-2-5">5</a></span>
-<span class="normal"><a href="#__codelineno-2-6">6</a></span>
-<span class="normal"><a href="#__codelineno-2-7">7</a></span>
-<span class="normal"><a href="#__codelineno-2-8">8</a></span>
-<span class="normal"><a href="#__codelineno-2-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a>{
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a>  &quot;browser&quot;: {
+<div class="language-text no-select highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">puppetchefrc</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-2-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-2-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-2-10">10</a></span>
+<span class="normal"><a href="#__codelineno-2-11">11</a></span>
+<span class="normal"><a href="#__codelineno-2-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a>{
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a>    &quot;executablePath&quot;: &quot;/usr/local/bin/chromium&quot;,
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a>    &quot;headless&quot;: false,
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4"></a>    &quot;defaultViewport&quot;: {
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5"></a>      &quot;width&quot;: 1920,
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6"></a>      &quot;height&quot;: 1080
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7"></a>    }
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8"></a>  }
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9"></a>}
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5"></a>        &quot;width&quot;: 1920,
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6"></a>        &quot;height&quot;: 1080
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7"></a>    },
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8"></a>    &quot;downloadBehavior&quot;: {
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9"></a>        &quot;policy&quot;: &quot;allow&quot;,
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10"></a>        &quot;downloadPath&quot;: &quot;/tmp&quot;
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11"></a>    }
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12"></a>}
 </span></code></pre></div></td></tr></table></div>
 
 
