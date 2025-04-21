@@ -1,9 +1,9 @@
-const puppeteer = require('puppeteer-extra');
-const { main } = require('../src/index.js');
-const { logger } = require('../src/logger.js');
+const puppeteer = require("puppeteer-extra");
+const { main } = require("../src/index.js");
+const { logger } = require("../src/logger.js");
 
 // Mock Puppeteer
-jest.mock('puppeteer-extra', () => ({
+jest.mock("puppeteer-extra", () => ({
   launch: jest.fn(() => ({
     newPage: jest.fn(() => ({
       goto: jest.fn(),
@@ -13,13 +13,13 @@ jest.mock('puppeteer-extra', () => ({
 }));
 
 // Mock logger
-jest.mock('../src/logger.js', () => ({
+jest.mock("../src/logger.js", () => ({
   logger: {
     debug: jest.fn(),
   },
 }));
 
-describe('Main Function', () => {
+describe("Main Function", () => {
   let mockPlugins;
 
   beforeEach(() => {
@@ -28,30 +28,30 @@ describe('Main Function', () => {
 
     // Mock plugins
     mockPlugins = {
-      'puppetchef.builtin.common': {
-        click: jest.fn(async () => 'clicked'),
-        fill_out: jest.fn(async () => 'filled'),
+      "puppetchef.builtin.common": {
+        click: jest.fn(async () => "clicked"),
+        fill_out: jest.fn(async () => "filled"),
       },
     };
   });
 
-  it('should execute tasks and steps successfully', async () => {
+  it("should execute tasks and steps successfully", async () => {
     const conf = { headless: true };
     const recipe = {
-      url: 'https://example.com',
-      name: 'Test Recipe',
+      url: "https://example.com",
+      name: "Test Recipe",
       tasks: [
         {
-          name: 'Task 1',
+          name: "Task 1",
           steps: [
             {
-              'puppetchef.builtin.common': {
-                command: 'click',
-                selector: '#button',
+              "puppetchef.builtin.common": {
+                command: "click",
+                selector: "#button",
               },
-              register: 'result',
+              register: "result",
               ignore_errors: false,
-              when: 'true',
+              when: "true",
             },
           ],
         },
@@ -62,33 +62,38 @@ describe('Main Function', () => {
 
     // Verify Puppeteer interactions
     expect(puppeteer.launch).toHaveBeenCalledWith({ headless: true });
-    
+
     // Verify logger calls
-    expect(logger.debug).toHaveBeenCalledWith('Executing task: Task 1');
-    expect(logger.debug).toHaveBeenCalledWith('Registering variable result with value "clicked"');
-    expect(mockPlugins['puppetchef.builtin.common'].click).toHaveBeenCalledWith(expect.anything(), {
-      command: 'click',
-      selector: '#button',
-    });
+    expect(logger.debug).toHaveBeenCalledWith("Executing task: Task 1");
+    expect(logger.debug).toHaveBeenCalledWith(
+      'Registering variable result with value "clicked"',
+    );
+    expect(mockPlugins["puppetchef.builtin.common"].click).toHaveBeenCalledWith(
+      expect.anything(),
+      {
+        command: "click",
+        selector: "#button",
+      },
+    );
     expect(result).toBe(0);
   });
 
-  it('should not execute task due to condition not met', async () => {
+  it("should not execute task due to condition not met", async () => {
     const conf = { headless: true };
     const recipe = {
-      url: 'https://example.com',
-      name: 'Test Recipe',
+      url: "https://example.com",
+      name: "Test Recipe",
       tasks: [
         {
-          name: 'Task 1',
+          name: "Task 1",
           steps: [
             {
-              'puppetchef.builtin.common': {
-                command: 'click',
-                selector: '#button',
+              "puppetchef.builtin.common": {
+                command: "click",
+                selector: "#button",
               },
               ignore_errors: false,
-              when: 'false',
+              when: "false",
             },
           ],
         },
@@ -99,21 +104,23 @@ describe('Main Function', () => {
 
     // Verify Puppeteer interactions
     expect(puppeteer.launch).toHaveBeenCalledWith({ headless: true });
-    
+
     // Verify logger calls
-    expect(logger.debug).toHaveBeenCalledWith('Executing task: Task 1');
-    expect(logger.debug).toHaveBeenCalledWith(expect.stringContaining('Condition not met'));
+    expect(logger.debug).toHaveBeenCalledWith("Executing task: Task 1");
+    expect(logger.debug).toHaveBeenCalledWith(
+      expect.stringContaining("Condition not met"),
+    );
     expect(result).toBe(0);
   });
 
-  it('should skip tasks with no steps', async () => {
+  it("should skip tasks with no steps", async () => {
     const conf = {};
     const recipe = {
-      url: 'https://example.com',
-      name: 'Test Recipe',
+      url: "https://example.com",
+      name: "Test Recipe",
       tasks: [
         {
-          name: 'Empty Task',
+          name: "Empty Task",
           steps: [],
         },
       ],
@@ -122,21 +129,23 @@ describe('Main Function', () => {
     await main(conf, recipe, mockPlugins);
 
     // Verify logger call for skipping task
-    expect(logger.debug).toHaveBeenCalledWith('No steps to perform for this task.');
+    expect(logger.debug).toHaveBeenCalledWith(
+      "No steps to perform for this task.",
+    );
   });
 
-  it('should handle errors and continue if ignore_errors is true', async () => {
+  it("should handle errors and continue if ignore_errors is true", async () => {
     const conf = {};
     const recipe = {
-      url: 'https://example.com',
-      name: 'Test Recipe',
+      url: "https://example.com",
+      name: "Test Recipe",
       tasks: [
         {
-          name: 'Task with Error',
+          name: "Task with Error",
           steps: [
             {
-              'puppetchef.builtin.common': {
-                command: 'nonexistent',
+              "puppetchef.builtin.common": {
+                command: "nonexistent",
               },
               ignore_errors: true,
             },
@@ -148,21 +157,23 @@ describe('Main Function', () => {
     await main(conf, recipe, mockPlugins);
 
     // Verify logger call for ignoring error
-    expect(logger.debug).toHaveBeenCalledWith(expect.stringContaining('Ignoring error:'));
+    expect(logger.debug).toHaveBeenCalledWith(
+      expect.stringContaining("Ignoring error:"),
+    );
   });
 
-  it('should stop execution on error if ignore_errors is false', async () => {
+  it("should stop execution on error if ignore_errors is false", async () => {
     const conf = {};
     const recipe = {
-      url: 'https://example.com',
-      name: 'Test Recipe',
+      url: "https://example.com",
+      name: "Test Recipe",
       tasks: [
         {
-          name: 'Task with Error',
+          name: "Task with Error",
           steps: [
             {
-              'puppetchef.builtin.common': {
-                command: 'nonexistent',
+              "puppetchef.builtin.common": {
+                command: "nonexistent",
               },
               ignore_errors: false,
             },
@@ -175,6 +186,8 @@ describe('Main Function', () => {
     expect(result).toBe(255);
 
     // Verify logger call for error
-    expect(logger.debug).toHaveBeenCalledWith(expect.stringContaining('Error executing plugin'));
+    expect(logger.debug).toHaveBeenCalledWith(
+      expect.stringContaining("Error executing plugin"),
+    );
   });
 });

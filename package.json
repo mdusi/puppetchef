@@ -9,8 +9,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "jest --coverage",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "format": "prettier --write \"**/*.{js,json}\""
   },
   "author": "Maurizio Dusi",
   "license": "MIT",
@@ -23,11 +22,9 @@
     "winston": "^3.17.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.19.0",
-    "eslint": "^9.19.0",
-    "eslint-plugin-jest": "^28.11.0",
     "globals": "^15.14.0",
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "prettier": "3.5.3"
   },
   "repository": {
     "type": "git",
