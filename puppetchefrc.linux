@@ -1,0 +1,11 @@
+{
+  "executablePath": "/usr/local/bin/chromium",
+  "platform": "linux",
+  "headless": true,
+  "defaultViewport": null,
+  "args": ["--no-sandbox", "--in-process-gpu", "--disable-dev-shm-usage", "--disable-setuid-sandbox"],
+  "downloadBehavior": {
+    "policy": "allow",
+    "downloadPath": "/tmp"
+  }
+}
