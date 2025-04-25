@@ -1,0 +1,10 @@
+{
+  "name": "no-browser",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "postCreateCommand": "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm ci",
+  "customizations": {
+    "vscode": {
+      "extensions": ["esbenp.prettier-vscode"]
+    }
+  }
+}
