@@ -7,12 +7,15 @@ RUN apt-get update && apt-get install gnupg wget -y && \
   apt-get install google-chrome-stable -y --no-install-recommends && \
   rm -rf /var/lib/apt/lists/*
 
-USER node
-
 WORKDIR /app
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PATH="/app/node_modules/.bin:${PATH}"
 
-RUN npm install puppetchef && \
+COPY . .
+
+RUN npm install -g && \
         npm prune --production
+
+USER node
+
+WORKDIR /home/node
