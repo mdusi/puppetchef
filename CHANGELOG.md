@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.4] - 2025-04-27
+
+### Added
+- **Logger Methods**: Enhanced logger functionality to dynamically print all available methods for debugging purposes.
+
+### Fixed
+- **Logger Error Handling**: Resolved an issue where `logger.error` was not recognized as a function in certain scenarios.
+- **Plugin Execution**: Improved error handling during plugin execution to ensure proper logging and variable registration.
+
 ## [3.2.3] - 2025-04-14
 
 ### Fixed
