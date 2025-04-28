@@ -32,9 +32,10 @@ puppetchef <recipe> [options]
 
 ### Environment Variables
 
-- `PUPPETCHEF_INFO`: Enables debugging at the INFO level.
-- `PUPPETCHEF_DEBUG`: Enables debugging at the DEBUG level.
+- `PUPPETCHEF_LOGLEVEL`: Enables debugging at the specified level (info, debug, error, warn, verbose).
 - `PUPPETCHEF_LOGFILE`: Path to the log file (default: stdout) when a debug level is set.
+- `PUPPETCHEF_INFO`: Enables debugging at the INFO level (deprecated).
+- `PUPPETCHEF_DEBUG`: Enables debugging at the DEBUG level (deprecated).
 
 ### Examples
 
