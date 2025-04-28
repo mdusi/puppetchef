@@ -16,6 +16,7 @@ jest.mock("puppeteer-extra", () => ({
 jest.mock("../src/logger.js", () => ({
   logger: {
     debug: jest.fn(),
+    error: jest.fn(),
   },
 }));
 
@@ -186,7 +187,7 @@ describe("Main Function", () => {
     expect(result).toBe(255);
 
     // Verify logger call for error
-    expect(logger.debug).toHaveBeenCalledWith(
+    expect(logger.error).toHaveBeenCalledWith(
       expect.stringContaining("Error executing plugin"),
     );
   });

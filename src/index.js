@@ -102,7 +102,7 @@ async function main(conf, recipe, plugins = null) {
           logger.debug(`Ignoring error: ${error}`);
           continue;
         }
-        logger.debug(`Error executing plugin ${plugin}: ${error}`);
+        logger.error(`Error executing plugin ${plugin}: ${error}`);
         retcode = 255;
         break;
       }
