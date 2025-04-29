@@ -10,6 +10,7 @@ describe("Integration Test", () => {
         width: 1920,
         height: 1080,
       },
+      args: ["--no-sandbox", "--in-process-gpu", "--disable-dev-shm-usage", "--disable-setuid-sandbox"]
     };
 
     const recipe = {
