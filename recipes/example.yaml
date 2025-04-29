@@ -1,0 +1,23 @@
+name: Example
+url: https://mdusi.github.io/puppetchef
+tasks:
+- name: Go To Examples
+  steps:
+  - puppetchef.builtin.common:
+      command: click
+      selector: 'xpath///*[@id="__consent"]/aside/form/div[2]/button[1]'
+
+  - puppetchef.builtin.common:
+      command: click
+      selector: 'xpath//html/body/header/nav[2]/div/ul/li[2]/a'
+
+  - puppetchef.builtin.common:
+      command: select
+      selector: 'xpath//html/body/div[4]/main/div/div[3]/article/div[4]/table/tbody/tr[2]/td[2]'
+    register: recipe
+
+  - puppetchef.builtin.common:
+      command: debug
+      data: "{{ recipe }}"
+      format: "Here is an exmaple recipe\n-----\n%s\n-----"
+

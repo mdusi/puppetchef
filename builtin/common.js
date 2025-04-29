@@ -1,23 +1,28 @@
 const { logger } = require("../src/logger.js");
 
+const locator = async (page, data = {}) => {
+  return await page.locator(data.selector).setTimeout(data.timeout || 30000);
+};
+
 module.exports = {
   select: async (page, data = {}) => {
     // page.on('console', msg => console.log('Browser log:', msg.text()));
     // console.log(data)
-    await page.locator(data.selector).setTimeout(data.timeout || 30000);
+    const elem = await locator(page, data);
+    try {
+      return await elem.map((e) => e.innerText).wait();
+    } catch (error) {
+      logger.error("Error while processing elements (ignoring):", error);
+    }
   },
 
   click: async (page, data = {}) => {
-    const elem = await page
-      .locator(data.selector)
-      .setTimeout(data.timeout || 30000);
+    const elem = await locator(page, data);
     await elem.click();
   },
 
   fill_out: async (page, data = {}) => {
-    const elem = await page
-      .locator(data.selector)
-      .setTimeout(data.timeout || 30000);
+    const elem = await locator(page, data);
     await elem.fill(data.data);
   },
 
