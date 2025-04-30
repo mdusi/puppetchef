@@ -4,7 +4,7 @@ A web automation tool that uses Puppeteer to execute web automation recipes defi
 
 ## Features
 
-- **YAML-based Recipe Definition**: Write your web automation tasks in a simple, readable YAML format (syntax inspired by Ansible).
+- **YAML-based Recipe Definition**: Write your web automation tasks in a simple, readable YAML format (syntax inspired by Ansible). Built-in support for ENV variables and JSON objects.
 - **Schema Validation**: Built-in validation for recipe structure and operations.
 - **Plugin System**: Extend functionality with custom plugins.
 - **Configuration Management**: Flexible configuration through JSON files.
@@ -34,8 +34,6 @@ puppetchef <recipe> [options]
 
 - `PUPPETCHEF_LOGLEVEL`: Enables debugging at the specified level (info, debug, error, warn, verbose).
 - `PUPPETCHEF_LOGFILE`: Path to the log file (default: stdout) when a debug level is set.
-- `PUPPETCHEF_INFO`: Enables debugging at the INFO level (deprecated).
-- `PUPPETCHEF_DEBUG`: Enables debugging at the DEBUG level (deprecated).
 
 ### Examples
 
@@ -71,6 +69,8 @@ Create a JSON configuration file to customize browser behavior:
 
 ### Recipe Format
 
+Template engine is based on Handlebarjs and support `env` and `json` as helper functions.
+
 ```yaml
 url: "https://example.com"
 name: "Login Test"
@@ -84,7 +84,7 @@ tasks:
       - puppetchef.builtin.common:
           command: "fill_out"
           selector: "#password"
-          data: "password123"
+          data: "{{{ env 'PASS' }}}"
       - puppetchef.builtin.common:
           command: "click"
           selector: "#submit"
@@ -102,7 +102,7 @@ module.exports = {
     await page.locator(data.selector);
 
     // If you need to return values for later use
-    return { x: 20, y: "msg"};
+    return { x: 20, y: "msg" };
   }
 };
 ```
@@ -128,10 +128,9 @@ tasks:
         register: ret
       - puppetchef.builtin.common:
           command: debug
-          data: "{{ ret.y }}"
-          format: "Debugging: %s"
+          format: "Debugging: {{ ret.y }}"
         # Conditionals for when to execute this step
-        when: ret.x > 0
+        when: "{{ ret.x }} > 0"
 ```
 
 ## License
