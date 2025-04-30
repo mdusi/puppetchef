@@ -1,6 +1,6 @@
 {
   "name": "puppetchef",
-  "version": "3.3.0",
+  "version": "4.0.0",
   "description": "A tool that uses Puppeteer to execute web automation recipes defined in YAML format.",
   "main": "index.js",
   "bin": {
