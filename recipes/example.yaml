@@ -18,6 +18,5 @@ tasks:
 
   - puppetchef.builtin.common:
       command: debug
-      data: "{{ recipe }}"
-      format: "Here is an exmaple recipe\n-----\n%s\n-----"
+      format: "Here is an exmaple recipe\n-----\n{{{ recipe }}}\n-----"
 

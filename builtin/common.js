@@ -43,10 +43,5 @@ module.exports = {
     );
   },
 
-  debug: async (page, data = {}) => {
-    const formattedMsg = data.format
-      ? data.format.replace("%s", data.data)
-      : data.data;
-    console.log(formattedMsg);
-  },
+  debug: async (page, data = {}) => console.log(data.format),
 };
