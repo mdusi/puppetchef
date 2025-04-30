@@ -10,7 +10,12 @@ describe("Integration Test", () => {
         width: 1920,
         height: 1080,
       },
-      args: ["--no-sandbox", "--in-process-gpu", "--disable-dev-shm-usage", "--disable-setuid-sandbox"]
+      args: [
+        "--no-sandbox",
+        "--in-process-gpu",
+        "--disable-dev-shm-usage",
+        "--disable-setuid-sandbox",
+      ],
     };
 
     const recipe = {
@@ -48,8 +53,8 @@ describe("Integration Test", () => {
             {
               "puppetchef.builtin.common": {
                 command: "debug",
-                data: "{{ recipe }}",
-                format: "Here is an exmaple recipe\n-----\n%s\n-----",
+                format:
+                  "Here is an exmaple recipe\n-----\n{{{ recipe }}}\n-----",
               },
               ignore_errors: false,
             },

@@ -14,8 +14,17 @@
  */
 
 const puppeteer = require("puppeteer-extra");
+const Handlebars = require("handlebars");
 const { stepReservedKeys } = require("./recipe.js");
 const { logger } = require("./logger.js");
+
+Handlebars.registerHelper("json", function (obj) {
+  return JSON.stringify(obj);
+});
+
+Handlebars.registerHelper("env", function (key) {
+  return process.env[key];
+});
 
 /**
  * Executes a web automation recipe using Puppeteer
@@ -50,11 +59,6 @@ async function main(conf, recipe, plugins = null) {
   await page.goto(recipe.url, { waitUntil: "networkidle0" });
 
   let variables = {};
-  const regex = /(?<!\S)(\w+)/g;
-  const fn = (match) => (match in variables ? `variables['${match}']` : match);
-  const regex2 = /{{\s*(\w+.*?)\s*}}/g;
-  const processEntry = (value) =>
-    regex2.test(value) ? eval(value.replace(regex2, `variables.$1`)) : value;
 
   // Execute recipe tasks
   for (const task of recipe.tasks) {
@@ -77,7 +81,7 @@ async function main(conf, recipe, plugins = null) {
 
       try {
         if (step.when) {
-          const cond = step.when.replace(regex, fn);
+          const cond = Handlebars.compile(step.when)(variables);
           const isConditionTrue = eval(cond);
           if (!isConditionTrue) {
             logger.debug(`Condition not met: ${cond}`);
@@ -86,7 +90,22 @@ async function main(conf, recipe, plugins = null) {
         }
 
         const data = Object.fromEntries(
-          Object.entries(step[plugin]).map(([k, v]) => [k, processEntry(v)]),
+          Object.entries(step[plugin]).map(([k, v]) => [
+            k,
+            (() => {
+              const compiledValue = Handlebars.compile(
+                typeof v === "object" ? JSON.stringify(v) : String(v),
+              )(variables);
+
+              try {
+                // Attempt to parse JSON to restore original type
+                return JSON.parse(compiledValue);
+              } catch {
+                // If parsing fails, return as string
+                return compiledValue;
+              }
+            })(),
+          ]),
         );
 
         const ret = await plugins[plugin][step[plugin].command](page, data);
