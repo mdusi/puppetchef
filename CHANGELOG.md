@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0] - 2025-04-30
+
+### Added
+- **Integration Test**: Added a new integration test to validate the entire program using a recipe as input without mocking.
+- **Chromium Installation in CI**: Updated GitHub Actions workflow to install Chromium for browser-based tests.
+- **Recipe Execution**: Added de/serialization of JSON objects and support for ENV variables.
+
+### Changed
+- **Recipe Schema**: Introduced support for template engine via Handlebarjs.
+
+### Fixed
+- **Recipe Execution**: Fixed issues with variable registration and handling of undefined values during recipe execution.
+
+### Removed
+- **Deprecated Options**: Removed unused or deprecated ENV variables for better clarity and maintainability.
+
 ## [3.3.0] - 2025-04-29
 
 ### Added
