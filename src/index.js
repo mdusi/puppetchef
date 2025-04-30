@@ -22,6 +22,10 @@ Handlebars.registerHelper("json", function (obj) {
   return JSON.stringify(obj);
 });
 
+Handlebars.registerHelper("env", function (key) {
+  return process.env[key];
+});
+
 /**
  * Executes a web automation recipe using Puppeteer
  *
