@@ -18,6 +18,10 @@ const Handlebars = require("handlebars");
 const { stepReservedKeys } = require("./recipe.js");
 const { logger } = require("./logger.js");
 
+Handlebars.registerHelper("json", function (obj) {
+  return JSON.stringify(obj);
+});
+
 /**
  * Executes a web automation recipe using Puppeteer
  *
@@ -84,9 +88,19 @@ async function main(conf, recipe, plugins = null) {
         const data = Object.fromEntries(
           Object.entries(step[plugin]).map(([k, v]) => [
             k,
-            Handlebars.compile(
-              typeof v === "object" ? JSON.stringify(v) : String(v),
-            )(variables),
+            (() => {
+              const compiledValue = Handlebars.compile(
+                typeof v === "object" ? JSON.stringify(v) : String(v),
+              )(variables);
+
+              try {
+                // Attempt to parse JSON to restore original type
+                return JSON.parse(compiledValue);
+              } catch {
+                // If parsing fails, return as string
+                return compiledValue;
+              }
+            })(),
           ]),
         );
 
