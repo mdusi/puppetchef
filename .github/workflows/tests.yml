@@ -1,4 +1,4 @@
-name: tests
+name: Run tests and lint
 
 on: [workflow_dispatch, workflow_call, pull_request]
 
@@ -6,9 +6,22 @@ permissions:
   contents: read
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install prettier
+        run: |
+          mv package.json package.json.bak
+          npm install prettier --no-save
+          mv package.json.bak package.json
+    
+      - name: Run prettier
+        run: npm run format
+
   test:
     runs-on: ubuntu-latest
-    
     strategy:
       matrix:
         node-version: [ '20.x' ]
