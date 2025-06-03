@@ -1,6 +1,6 @@
 {
   "name": "puppetchef",
-  "version": "4.0.0",
+  "version": "4.0.2",
   "description": "A tool that uses Puppeteer to execute web automation recipes defined in YAML format.",
   "main": "index.js",
   "bin": {
@@ -11,7 +11,7 @@
     "test": "node --experimental-vm-modules node_modules/.bin/jest --coverage",
     "format": "prettier --write \"**/*.{js,json}\""
   },
-  "author": "Maurizio Dusi",
+  "author": "IOcrafts",
   "license": "MIT",
   "dependencies": {
     "ajv": "^8.17.1",
@@ -29,7 +29,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mdusi/puppetchef.git"
+    "url": "git+https://github.com/iocrafts/puppetchef.git"
   },
   "keywords": [
     "web",
@@ -38,7 +38,7 @@
     "yaml"
   ],
   "bugs": {
-    "url": "https://github.com/mdusi/puppetchef/issues"
+    "url": "https://github.com/iocrafts/puppetchef/issues"
   },
-  "homepage": "https://github.com/mdusi/puppetchef#readme"
+  "homepage": "https://github.com/iocrafts/puppetchef#readme"
 }
