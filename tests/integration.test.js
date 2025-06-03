@@ -20,7 +20,7 @@ describe("Integration Test", () => {
 
     const recipe = {
       name: "Example",
-      url: "https://mdusi.github.io/puppetchef",
+      url: "https://iocrafts.github.io/puppetchef",
       tasks: [
         {
           name: "Go To Examples",
